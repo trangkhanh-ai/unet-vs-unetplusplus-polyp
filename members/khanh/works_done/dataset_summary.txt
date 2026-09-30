@@ -1,0 +1,22 @@
+============================================================
+ BÁO CÁO PHÂN BỐ TẬP DỮ LIỆU KVASIR-SEG THEO KÍCH CỠ POLYP
+============================================================
+
+1. Phân bố theo tập split (700/150/150):
+polyp_category  large  medium  small   All
+split                                     
+test               40      80     30   150
+train             186     374    140   700
+val                40      80     30   150
+All               266     534    200  1000
+
+
+2. Phân bố theo 5-Fold Stratified:
+polyp_category  large  medium  small   All
+kfold_5                                   
+0                  54     106     40   200
+1                  53     107     40   200
+2                  53     107     40   200
+3                  53     107     40   200
+4                  53     107     40   200
+All               266     534    200  1000
