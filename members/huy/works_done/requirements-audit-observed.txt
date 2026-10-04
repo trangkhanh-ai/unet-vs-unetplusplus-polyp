@@ -1,0 +1,9 @@
+# Observed direct dependencies of Huy's CPU audit, not the group's training lockfile.
+# Python 3.12.6. PyTorch +cpu wheel needs the appropriate official package index.
+# Transitive dependencies are listed in evidence/environment_packages.txt.
+torch==2.12.1+cpu
+numpy==2.4.4
+pandas==3.0.2
+opencv-python-headless==5.0.0.93
+albumentations==2.0.8
+matplotlib==3.10.8
