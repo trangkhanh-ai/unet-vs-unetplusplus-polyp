@@ -1,0 +1,269 @@
+{
+  "checked_at_utc": "2026-10-04T03:42:07.143968+00:00",
+  "python_executable": "C:\\Users\\ACER\\Documents\\Codex\\2026-09-28\\new-chat\\work\\huy_data_check_env\\Scripts\\python.exe",
+  "python": "3.12.6",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "processor": "Intel64 Family 6 Model 154 Stepping 3, GenuineIntel",
+  "modules": {
+    "torch": "2.12.1+cpu",
+    "cv2": "5.0.0",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "albumentations": "2.0.8"
+  },
+  "direct_audit_packages": {
+    "torch": "2.12.1",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "opencv-python-headless": "5.0.0.93",
+    "albumentations": "2.0.8",
+    "matplotlib": "3.10.8"
+  },
+  "cuda_available": false,
+  "audit_settings": {
+    "batch_size": 4,
+    "image_size": [
+      256,
+      256
+    ],
+    "num_workers": 0,
+    "torch_cpu_threads": 2,
+    "opencv_threads": 20,
+    "seed": 42,
+    "seed_source": "create_stratified_splits default in group's script",
+    "test_loader_iterated": false,
+    "model_used": false,
+    "batch_size_source": "Khanh's existing handover smoke check"
+  },
+  "sampler": {
+    "samples": 700,
+    "same_order_after_global_seed_reset": true,
+    "order_sha256": [
+      "7032eae06d9ad5c51f12b390351191efe8df467a69d994987b58c883568a70ef",
+      "7032eae06d9ad5c51f12b390351191efe8df467a69d994987b58c883568a70ef"
+    ],
+    "first_ids": [
+      "cju353d1eda8c07992afde611",
+      "cju1cu1u2474n0878tt7v4tdr",
+      "cju7dxffn2eam0817qxosfwch",
+      "cju43lcnum9y10755bjs7z87f",
+      "cju77k828z46w0871r0avuoo9",
+      "cju1g4nsb6ngy0799l4ezm8ab",
+      "cju5ccpvqash50850kb4bs22k",
+      "cju85bf1algsq0871y9gtlq97"
+    ],
+    "scope": "Direct sampler iteration; recorded separately from batch iteration's base-seed consumption."
+  },
+  "global_seed_only": {
+    "batches_per_run": 2,
+    "samples_per_run": 8,
+    "all_batches_equal": false,
+    "run_a": [
+      {
+        "images": "66728e826b47f7c5e9bc9452504237d60f9ddc71163a1704482dd16fd398f37b",
+        "masks": "c8eb092a3806490271556f3b543669dfcbda4755f4d28c7932c045854b586f16"
+      },
+      {
+        "images": "085df8eaa39e9170d80a7648ac52aba6e804a4082ac2609c5fdb95cbbb8db25b",
+        "masks": "59cf3e271f2dc363144e71a1f163ff9fff579d9cf6d9f19dd8ecb87eb08faec4"
+      }
+    ],
+    "run_b": [
+      {
+        "images": "2d1be426f8847ad94a16bfe04018a52bb89d8bd50fc31a355ef7216a3862e009",
+        "masks": "9c705bd7ebfd40379bcec779edc311ed68ec15ce7df50d2c928bd99f9f5060b3"
+      },
+      {
+        "images": "96c027957e86f72d3ce72eebae7cd9f5ced8820e56fdd810b5ee82bd00ecd346",
+        "masks": "0e668f9236b9224fdb893efef5c21615d2bfbe11c69b9889dfea191eacaff0b5"
+      }
+    ]
+  },
+  "global_and_compose_seed": {
+    "run_a": {
+      "samples": 700,
+      "images_sha256": "948d646300e0c9361e8b0740565fecd07b868e468333d8b6e0592db1c5d412e8",
+      "masks_sha256": "9de735c0b7f053665389e1321dceb46df7e83a6d08848c4f557a4b65f5bce7eb"
+    },
+    "run_b": {
+      "samples": 700,
+      "images_sha256": "948d646300e0c9361e8b0740565fecd07b868e468333d8b6e0592db1c5d412e8",
+      "masks_sha256": "9de735c0b7f053665389e1321dceb46df7e83a6d08848c4f557a4b65f5bce7eb"
+    },
+    "all_samples_equal": true,
+    "scope": "Fresh loaders, same process/environment, workers=0. Not model or checkpoint reproducibility."
+  },
+  "loader_timing": {
+    "measurements": [
+      {
+        "split": "train",
+        "repetition": 1,
+        "samples": 700,
+        "batches": 175,
+        "total_seconds": 10.389201499987394,
+        "images_per_second": 67.37765168967503,
+        "median_batch_ms": 57.44340003002435,
+        "p95_batch_ms": 82.24813002161679
+      },
+      {
+        "split": "train",
+        "repetition": 2,
+        "samples": 700,
+        "batches": 175,
+        "total_seconds": 10.563683799933642,
+        "images_per_second": 66.26476267723928,
+        "median_batch_ms": 58.49329999182373,
+        "p95_batch_ms": 83.97703996160999
+      },
+      {
+        "split": "train",
+        "repetition": 3,
+        "samples": 700,
+        "batches": 175,
+        "total_seconds": 11.137701899977401,
+        "images_per_second": 62.8495901835387,
+        "median_batch_ms": 61.281099915504456,
+        "p95_batch_ms": 90.39486000547181
+      },
+      {
+        "split": "val",
+        "repetition": 1,
+        "samples": 150,
+        "batches": 38,
+        "total_seconds": 1.98944399994798,
+        "images_per_second": 75.39795038408832,
+        "median_batch_ms": 48.51050005527213,
+        "p95_batch_ms": 85.20699493819848
+      },
+      {
+        "split": "val",
+        "repetition": 2,
+        "samples": 150,
+        "batches": 38,
+        "total_seconds": 1.9950474000070244,
+        "images_per_second": 75.18618354605101,
+        "median_batch_ms": 48.051550053060055,
+        "p95_batch_ms": 82.81489002984017
+      },
+      {
+        "split": "val",
+        "repetition": 3,
+        "samples": 150,
+        "batches": 38,
+        "total_seconds": 2.0503853000700474,
+        "images_per_second": 73.15698176087955,
+        "median_batch_ms": 49.322200065944344,
+        "p95_batch_ms": 87.35595004400238
+      }
+    ],
+    "scope": "CPU disk decode + existing transforms + collation. No model, GPU transfer, backward, loss or test. Warm OS cache likely; not cold-start or training throughput."
+  },
+  "effective_transforms": {
+    "train": {
+      "__version__": "2.0.8",
+      "transform": {
+        "__class_fullname__": "Compose",
+        "p": 1.0,
+        "transforms": [
+          {
+            "__class_fullname__": "Resize",
+            "p": 1.0,
+            "area_for_downscale": null,
+            "height": 256,
+            "interpolation": 1,
+            "mask_interpolation": 0,
+            "width": 256
+          },
+          {
+            "__class_fullname__": "HorizontalFlip",
+            "p": 0.5
+          },
+          {
+            "__class_fullname__": "VerticalFlip",
+            "p": 0.5
+          },
+          {
+            "__class_fullname__": "RandomRotate90",
+            "p": 0.5
+          },
+          {
+            "__class_fullname__": "ShiftScaleRotate",
+            "p": 0.5,
+            "shift_limit_x": [
+              -0.06,
+              0.06
+            ],
+            "shift_limit_y": [
+              -0.06,
+              0.06
+            ],
+            "scale_limit": [
+              -0.09999999999999998,
+              0.10000000000000009
+            ],
+            "rotate_limit": [
+              -15.0,
+              15.0
+            ],
+            "interpolation": 1,
+            "border_mode": 0,
+            "fill": 0.0,
+            "fill_mask": 0.0,
+            "rotate_method": "largest_box",
+            "mask_interpolation": 0
+          },
+          {
+            "__class_fullname__": "ColorJitter",
+            "p": 0.4,
+            "brightness": [
+              0.8,
+              1.2
+            ],
+            "contrast": [
+              0.8,
+              1.2
+            ],
+            "hue": [
+              -0.1,
+              0.1
+            ],
+            "saturation": [
+              0.8,
+              1.2
+            ]
+          },
+          {
+            "__class_fullname__": "Normalize",
+            "p": 1.0,
+            "max_pixel_value": 255.0,
+            "mean": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "normalization": "standard",
+            "std": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "__class_fullname__": "ToTensorV2",
+            "p": 1.0,
+            "transpose_mask": false
+          }
+        ],
+        "bbox_params": null,
+        "keypoint_params": null,
+        "additional_targets": {},
+        "is_check_shapes": true
+      }
+    }
+  },
+  "warnings": [
+    "UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.",
+    "UserWarning: Argument(s) 'value, mask_value' are not valid for transform ShiftScaleRotate",
+    "UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead."
+  ]
+}

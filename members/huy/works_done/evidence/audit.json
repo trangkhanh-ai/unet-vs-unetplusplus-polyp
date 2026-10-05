@@ -1,0 +1,312 @@
+{
+  "checked_at_utc": "2026-10-04T03:29:08.777812+00:00",
+  "repository": "D:\\Nam_3\\HK1\\DL\\LT\\unet-vs-unetplusplus-polyp",
+  "commit": "2f0812a33d691ce2068688d5d6c6689b7da77dd6",
+  "branch": "codex/huy-data-intake",
+  "git_status_before": "M README.md\n?? members/huy/",
+  "python": "3.12.6 (tags/v3.12.6:a4a2d2b, Sep  6 2024, 20:11:23) [MSC v.1940 64 bit (AMD64)]",
+  "python_executable": "C:\\Users\\ACER\\Documents\\Codex\\2026-09-28\\new-chat\\work\\huy_data_check_env\\Scripts\\python.exe",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "source_sha256": {
+    "members\\khanh\\works_done\\dataset_splits.csv": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+    "members\\khanh\\works_done\\dataset.py": "2051a80ea09c0a0c41471e46cfe854c540064915eb2e52122856fcee0bbb3b8b"
+  },
+  "scope": "Existing data and train/val loader audit. Test metadata/file integrity only; no model or test scoring.",
+  "modules": {
+    "torch": "2.12.1+cpu",
+    "numpy": "2.4.4",
+    "pandas": "3.0.2",
+    "cv2": "5.0.0",
+    "albumentations": "2.0.8"
+  },
+  "cuda_available": false,
+  "cuda_build": null,
+  "manifest": {
+    "rows": 1000,
+    "split_counts": {
+      "train": 700,
+      "test": 150,
+      "val": 150
+    },
+    "category_counts": {
+      "test": {
+        "large": 40,
+        "medium": 80,
+        "small": 30
+      },
+      "train": {
+        "large": 186,
+        "medium": 374,
+        "small": 140
+      },
+      "val": {
+        "large": 40,
+        "medium": 80,
+        "small": 30
+      }
+    },
+    "fold_counts": {
+      "0": 200,
+      "1": 200,
+      "2": 200,
+      "3": 200,
+      "4": 200
+    },
+    "duplicate_ids": [],
+    "split_overlaps": {
+      "train/val": [],
+      "train/test": [],
+      "val/test": []
+    },
+    "unlisted_files": {
+      "image": [],
+      "mask": []
+    },
+    "raw_file_checks": {
+      "valid_pairs": 1000,
+      "empty_masks": 0
+    },
+    "byte_duplicate_image_groups": [],
+    "decoded_duplicate_image_groups": [],
+    "issues": [],
+    "limitation": "Exact duplicates only; no near-duplicate or patient/video independence verification."
+  },
+  "audit_settings": {
+    "batch_size": 4,
+    "source": "Khanh's __main__ handover check",
+    "training_batch_size_decided": false,
+    "test_loader_iterated": false,
+    "augmentation": "Unmodified existing pipeline; no new dataset generated.",
+    "audit_seed_from_group_manifest_script": 42
+  },
+  "effective_transforms": {
+    "train": {
+      "__version__": "2.0.8",
+      "transform": {
+        "__class_fullname__": "Compose",
+        "p": 1.0,
+        "transforms": [
+          {
+            "__class_fullname__": "Resize",
+            "p": 1.0,
+            "area_for_downscale": null,
+            "height": 256,
+            "interpolation": 1,
+            "mask_interpolation": 0,
+            "width": 256
+          },
+          {
+            "__class_fullname__": "HorizontalFlip",
+            "p": 0.5
+          },
+          {
+            "__class_fullname__": "VerticalFlip",
+            "p": 0.5
+          },
+          {
+            "__class_fullname__": "RandomRotate90",
+            "p": 0.5
+          },
+          {
+            "__class_fullname__": "ShiftScaleRotate",
+            "p": 0.5,
+            "shift_limit_x": [
+              -0.06,
+              0.06
+            ],
+            "shift_limit_y": [
+              -0.06,
+              0.06
+            ],
+            "scale_limit": [
+              -0.09999999999999998,
+              0.10000000000000009
+            ],
+            "rotate_limit": [
+              -15.0,
+              15.0
+            ],
+            "interpolation": 1,
+            "border_mode": 0,
+            "fill": 0.0,
+            "fill_mask": 0.0,
+            "rotate_method": "largest_box",
+            "mask_interpolation": 0
+          },
+          {
+            "__class_fullname__": "ColorJitter",
+            "p": 0.4,
+            "brightness": [
+              0.8,
+              1.2
+            ],
+            "contrast": [
+              0.8,
+              1.2
+            ],
+            "hue": [
+              -0.1,
+              0.1
+            ],
+            "saturation": [
+              0.8,
+              1.2
+            ]
+          },
+          {
+            "__class_fullname__": "Normalize",
+            "p": 1.0,
+            "max_pixel_value": 255.0,
+            "mean": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "normalization": "standard",
+            "std": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "__class_fullname__": "ToTensorV2",
+            "p": 1.0,
+            "transpose_mask": false
+          }
+        ],
+        "bbox_params": null,
+        "keypoint_params": null,
+        "additional_targets": {},
+        "is_check_shapes": true
+      }
+    },
+    "val": {
+      "__version__": "2.0.8",
+      "transform": {
+        "__class_fullname__": "Compose",
+        "p": 1.0,
+        "transforms": [
+          {
+            "__class_fullname__": "Resize",
+            "p": 1.0,
+            "area_for_downscale": null,
+            "height": 256,
+            "interpolation": 1,
+            "mask_interpolation": 0,
+            "width": 256
+          },
+          {
+            "__class_fullname__": "Normalize",
+            "p": 1.0,
+            "max_pixel_value": 255.0,
+            "mean": [
+              0.0,
+              0.0,
+              0.0
+            ],
+            "normalization": "standard",
+            "std": [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          {
+            "__class_fullname__": "ToTensorV2",
+            "p": 1.0,
+            "transpose_mask": false
+          }
+        ],
+        "bbox_params": null,
+        "keypoint_params": null,
+        "additional_targets": {},
+        "is_check_shapes": true
+      }
+    }
+  },
+  "loader": {
+    "train": {
+      "samples": 700,
+      "batches": 175,
+      "first_batch": {
+        "image_shape": [
+          4,
+          3,
+          256,
+          256
+        ],
+        "mask_shape": [
+          4,
+          1,
+          256,
+          256
+        ]
+      },
+      "image_dtype": "float32",
+      "mask_dtype": "float32",
+      "image_range": [
+        0.0,
+        1.0
+      ],
+      "mask_values": [
+        0.0,
+        1.0
+      ],
+      "empty_masks_after_transform": 0,
+      "sampler": "RandomSampler",
+      "drop_last": false
+    },
+    "val": {
+      "samples": 150,
+      "batches": 38,
+      "first_batch": {
+        "image_shape": [
+          4,
+          3,
+          256,
+          256
+        ],
+        "mask_shape": [
+          4,
+          1,
+          256,
+          256
+        ]
+      },
+      "image_dtype": "float32",
+      "mask_dtype": "float32",
+      "image_range": [
+        0.0,
+        1.0
+      ],
+      "mask_values": [
+        0.0,
+        1.0
+      ],
+      "empty_masks_after_transform": 0,
+      "sampler": "SequentialSampler",
+      "drop_last": false
+    }
+  },
+  "val_reference": {
+    "image_id": "cju0s2a9ekvms080138tjjpxr",
+    "repeat_identical": true,
+    "rgb_resize_normalization_max_abs_error": 5.960464477539063e-08,
+    "nearest_mask_matches": true
+  },
+  "preview_train_ids": [
+    "cju0qkwl35piu0993l0dewei2",
+    "cju0qx73cjw570799j4n5cjze",
+    "cju0roawvklrq0799vmjorwfv",
+    "cju0rx1idathl0835detmsp84"
+  ],
+  "status": "technical_checks_passed_review_warnings",
+  "warnings": [
+    "UserWarning: 'pin_memory' argument is set as true but no accelerator is found, then device pinned memory won't be used.",
+    "UserWarning: Argument(s) 'value, mask_value' are not valid for transform ShiftScaleRotate",
+    "UserWarning: ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead."
+  ],
+  "elapsed_seconds": 90.43773759994656,
+  "source_unchanged": true
+}
