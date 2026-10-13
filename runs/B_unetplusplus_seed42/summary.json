@@ -1,0 +1,98 @@
+{
+  "status": "completed",
+  "model_name": "unetplusplus",
+  "config": {
+    "model": "unetplusplus",
+    "model_kwargs": {
+      "in_channels": 3,
+      "out_channels": 1,
+      "base_channels": 32,
+      "batch_norm": false,
+      "deep_supervision": false
+    },
+    "manifest": "members/khanh/works_done/dataset_splits.csv",
+    "image_size": [
+      256,
+      256
+    ],
+    "seed": 42,
+    "batch_size": 8,
+    "num_workers": 0,
+    "learning_rate": 0.001,
+    "max_epochs": 50,
+    "early_stopping_patience": 10,
+    "device": "cuda",
+    "amp": true,
+    "amp_dtype": "bfloat16",
+    "torch_threads": 4,
+    "augmentation": true,
+    "scheduler": "none",
+    "loss": {
+      "bce_weight": 0.5,
+      "soft_dice_weight": 0.5,
+      "smooth": 1e-06
+    },
+    "evaluation": {
+      "threshold": 0.5,
+      "head_policy": "last",
+      "aggregation": "per_image_then_mean"
+    }
+  },
+  "device": "cuda",
+  "amp_effective": true,
+  "parameter_count": 9042177,
+  "training_precision": "amp_bfloat16",
+  "grad_scaler_enabled": false,
+  "validation_precision": "float32",
+  "epochs_completed": 50,
+  "best": {
+    "epoch": 49,
+    "val_dice": 0.7116183269122405,
+    "val_iou": 0.5859178215397248,
+    "val_loss": 0.2874983224024375
+  },
+  "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+  "split_counts": {
+    "train": 700,
+    "test": 150,
+    "val": 150
+  },
+  "train_images": 700,
+  "validation_images": 150,
+  "test_images_read": 0,
+  "history_csv": "history.csv",
+  "best_checkpoint": "best.pt",
+  "last_checkpoint": "last.pt",
+  "training_and_validation_seconds": 31231.67690830049,
+  "provenance": {
+    "created_utc": "2026-10-12T16:36:59.869336+00:00",
+    "source_commit": "b8416d9eb3a20761c28a62b3bf169c19a10e534f",
+    "branch": "codex/full-polyp-project",
+    "dirty": true,
+    "source_hashes": {
+      "members/khanh/works_done/dataset.py": "b05d32cf97e4ddf7c7078e4fbbdf43db8c9098decedad18dc8c958e2f5859b27",
+      "members/duy/works_done/unet.py": "f52a12d18e11b783d8ddebde203a4afa101e5f1bc220658e3af7914a5140e8fa",
+      "members/duy/works_done/model_factory.py": "6d448e0dc9a26f9a72878829f75f6168c80bb09a1271d7c981c1d329db62b66f",
+      "members/phuc/works_done/unetplusplus.py": "378d02d506f3be670622b25fd5f0296e1c74cd1bd08718ac1ea436ae6fcafe15",
+      "members/huy/works_done/losses.py": "11e20cc078bdb146c45554027b8ac381d503e754963054ab4a4421f50e64fbe5",
+      "members/huy/works_done/training.py": "3c317f92c4c2206cf4dd784b9ca0cfa8302ac905084a50145c778bf5e36babcc",
+      "members/huy/works_done/run_utils.py": "e19c42bfd94841f6de16f3cff8e2db0a55de03e13890da700f7bb8fa9ba0ff24",
+      "members/tri/works_done/metrics.py": "6c1956cdeae0a8c373dceb7359a1e883b2e730ce3845cccc666cb9c838d8696f"
+    },
+    "environment": {
+      "python": "3.12.14 (main, Aug 25 2026, 14:01:42) [MSC v.1944 64 bit (AMD64)]",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "torch": "2.11.0+cu128",
+      "numpy": "2.2.6",
+      "device": "cuda",
+      "cuda_build": "12.8",
+      "cuda_available": true,
+      "deterministic_algorithms": true,
+      "torch_threads": 4,
+      "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+      "gpu_total_memory_bytes": 8546484224,
+      "training_precision": "amp_bfloat16",
+      "grad_scaler_enabled": false
+    }
+  }
+}

@@ -1,0 +1,207 @@
+{
+  "status": "passed",
+  "created_utc": "2026-10-13T02:19:59.798452+00:00",
+  "scope": "Read-only audit of completed official BF16 runs and already exported locked test results; no training/evaluation/tests launched and no images opened. Only this audit JSON is written.",
+  "protocol": "v2; shared BF16 AMP train / FP32 validation and test / seed42 / manifest700-150-150 / batch8 / maximum50epochs / patience10",
+  "checks": {
+    "eight_execution_source_hashes_match_frozen_current_and_all_runs": true,
+    "three_official_config_sha256_match_pre_C_launch_reference": true,
+    "all_resolved_run_configs_match_official_json_with_device_cuda": true,
+    "common_training_config_identical_across_A_B_C": true,
+    "manifest_hash_and_split_counts_unchanged": true,
+    "all_three_completed_50_epochs": true,
+    "training_runs_read_zero_test_images": true,
+    "selected_best_matches_validation_history": true,
+    "locked_checkpoints_match_evaluation_sha256": true,
+    "lock_timestamp_before_each_exported_test_evaluation": true,
+    "same_150_ordered_unique_test_ids_and_manifest_test_set": true,
+    "per_image_csv_means_match_evaluation_and_comparison_metrics": true,
+    "evaluation_precision_hardware_timing_settings_identical": true
+  },
+  "frozen_source_reference": "results/verification_bf16_v2/protocol_source_hashes.json",
+  "source_sha256": {
+    "members/khanh/works_done/dataset.py": "b05d32cf97e4ddf7c7078e4fbbdf43db8c9098decedad18dc8c958e2f5859b27",
+    "members/duy/works_done/unet.py": "f52a12d18e11b783d8ddebde203a4afa101e5f1bc220658e3af7914a5140e8fa",
+    "members/duy/works_done/model_factory.py": "6d448e0dc9a26f9a72878829f75f6168c80bb09a1271d7c981c1d329db62b66f",
+    "members/phuc/works_done/unetplusplus.py": "378d02d506f3be670622b25fd5f0296e1c74cd1bd08718ac1ea436ae6fcafe15",
+    "members/huy/works_done/losses.py": "11e20cc078bdb146c45554027b8ac381d503e754963054ab4a4421f50e64fbe5",
+    "members/huy/works_done/training.py": "3c317f92c4c2206cf4dd784b9ca0cfa8302ac905084a50145c778bf5e36babcc",
+    "members/huy/works_done/run_utils.py": "e19c42bfd94841f6de16f3cff8e2db0a55de03e13890da700f7bb8fa9ba0ff24",
+    "members/tri/works_done/metrics.py": "6c1956cdeae0a8c373dceb7359a1e883b2e730ce3845cccc666cb9c838d8696f"
+  },
+  "config_sha256": {
+    "configs/unet.json": "95d33123fe92406a00084417077e216648b8df89788e816de5e1e97408270903",
+    "configs/unetplusplus.json": "97363c58288257b96648cdf050c51f0b7d088d019e43034dd79a8a5338f6b31c",
+    "configs/unetplusplus_ds.json": "ac5cdba3d1bf71b077569ebbfeb80e8e4176c0c90001767d29225a2ead04d537"
+  },
+  "config_hash_reference": "Recorded before automatic C launch in scripts/tiep_tuc_C_sau_B.ps1; protocol_source_hashes.json itself contains the eight execution source hashes only.",
+  "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+  "split_counts": {
+    "train": 700,
+    "val": 150,
+    "test": 150
+  },
+  "ordered_test_ids_sha256": "68c9946c29eca7801b4f7824c48e944a91921081ea2cd15540bf743019e879bf",
+  "protocol_lock_sha256": "b7742166ae3330642de840b38fda90907c93f80595ae55573e2fbdc1c6cb4134",
+  "common_training_config": {
+    "model_kwargs": {
+      "in_channels": 3,
+      "out_channels": 1,
+      "base_channels": 32,
+      "batch_norm": false
+    },
+    "manifest": "members/khanh/works_done/dataset_splits.csv",
+    "image_size": [
+      256,
+      256
+    ],
+    "seed": 42,
+    "batch_size": 8,
+    "num_workers": 0,
+    "learning_rate": 0.001,
+    "max_epochs": 50,
+    "early_stopping_patience": 10,
+    "device": "cuda",
+    "amp": true,
+    "amp_dtype": "bfloat16",
+    "torch_threads": 4,
+    "augmentation": true,
+    "scheduler": "none",
+    "loss": {
+      "bce_weight": 0.5,
+      "soft_dice_weight": 0.5,
+      "smooth": 1e-06
+    },
+    "evaluation": {
+      "threshold": 0.5,
+      "head_policy": "last",
+      "aggregation": "per_image_then_mean"
+    }
+  },
+  "evaluation_environment": {
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "torch": "2.11.0+cu128",
+    "python": "3.12.14",
+    "torch_threads": 4,
+    "precision": "float32",
+    "amp": false,
+    "cuda_build": "12.8",
+    "tf32_matmul": false,
+    "tf32_cudnn": false
+  },
+  "runs": [
+    {
+      "label": "A",
+      "run": "runs/A_unet_seed42",
+      "status": "completed",
+      "epochs_completed": 50,
+      "best_validation": {
+        "epoch": 50,
+        "val_dice": 0.6337386469228167,
+        "val_iou": 0.5202974885099534,
+        "val_loss": 0.3533203904827436
+      },
+      "training_precision": "amp_bfloat16",
+      "validation_precision": "float32",
+      "grad_scaler_enabled": false,
+      "train_test_images_read": 0,
+      "parameters": 7760097,
+      "training_and_validation_wall_seconds": 874.5448711002246,
+      "pause_rows_over_one_hour": [],
+      "training_time_caveat": "Recorded train+validation epoch wall time; includes data loading/checkpoints scheduling conditions, not a dedicated GPU compute benchmark.",
+      "peak_torch_gpu_allocated_bytes": 1269897216,
+      "peak_torch_gpu_allocated_gib": 1.1826839447021484,
+      "peak_memory_scope": "torch.cuda.max_memory_allocated for each training epoch, not total GPU memory reserved by all programs",
+      "best_checkpoint_sha256": "403c2d60b07f1d647241f30572a626d9d821d496e03adebe02c14805d12d4aa3",
+      "test_image_count": 150,
+      "test_metrics": {
+        "dice": 0.6014174367678824,
+        "iou": 0.4872587524942664,
+        "precision": 0.6851848130126327,
+        "recall": 0.6267466317387427
+      },
+      "evaluation_forward_ms_per_image": 6.296295995513598,
+      "forward_timing_scope": "model forward only; excludes loading, transfer, sigmoid, metrics, export; float32 without AMP"
+    },
+    {
+      "label": "B",
+      "run": "runs/B_unetplusplus_seed42",
+      "status": "completed",
+      "epochs_completed": 50,
+      "best_validation": {
+        "epoch": 49,
+        "val_dice": 0.7116183269122405,
+        "val_iou": 0.5859178215397248,
+        "val_loss": 0.2874983224024375
+      },
+      "training_precision": "amp_bfloat16",
+      "validation_precision": "float32",
+      "grad_scaler_enabled": false,
+      "train_test_images_read": 0,
+      "parameters": 9042177,
+      "training_and_validation_wall_seconds": 31231.67690830049,
+      "pause_rows_over_one_hour": [
+        {
+          "epoch": 10,
+          "recorded_seconds": 29639.125519399997
+        }
+      ],
+      "training_time_caveat": "Recorded wall time includes a machine/application pause in epoch10; not GPU compute time and not comparable training-cost evidence.",
+      "peak_torch_gpu_allocated_bytes": 2917361664,
+      "peak_torch_gpu_allocated_gib": 2.7170047760009766,
+      "peak_memory_scope": "torch.cuda.max_memory_allocated for each training epoch, not total GPU memory reserved by all programs",
+      "best_checkpoint_sha256": "d140326faf18b44b71226d47be0824b71076a92d0a36bb439c91aef9c4e83834",
+      "test_image_count": 150,
+      "test_metrics": {
+        "dice": 0.668239984232573,
+        "iou": 0.542088791330187,
+        "precision": 0.7061638812510741,
+        "recall": 0.7369525955078634
+      },
+      "evaluation_forward_ms_per_image": 18.42099866985033,
+      "forward_timing_scope": "model forward only; excludes loading, transfer, sigmoid, metrics, export; float32 without AMP"
+    },
+    {
+      "label": "C",
+      "run": "runs/C_unetplusplus_ds_seed42",
+      "status": "completed",
+      "epochs_completed": 50,
+      "best_validation": {
+        "epoch": 48,
+        "val_dice": 0.7888222476699187,
+        "val_iou": 0.6845366848100433,
+        "val_loss": 0.2194076307117939
+      },
+      "training_precision": "amp_bfloat16",
+      "validation_precision": "float32",
+      "grad_scaler_enabled": false,
+      "train_test_images_read": 0,
+      "parameters": 9042276,
+      "training_and_validation_wall_seconds": 1545.2129867994227,
+      "pause_rows_over_one_hour": [],
+      "training_time_caveat": "Recorded train+validation epoch wall time; includes data loading/checkpoints scheduling conditions, not a dedicated GPU compute benchmark.",
+      "peak_torch_gpu_allocated_bytes": 2915801088,
+      "peak_torch_gpu_allocated_gib": 2.7155513763427734,
+      "peak_memory_scope": "torch.cuda.max_memory_allocated for each training epoch, not total GPU memory reserved by all programs",
+      "best_checkpoint_sha256": "e292d3cf7dbe09d94377279ff839389c3c3824ef87a345a382376da42eeb8eca",
+      "test_image_count": 150,
+      "test_metrics": {
+        "dice": 0.7390470717877173,
+        "iou": 0.6304042486085379,
+        "precision": 0.777874146785098,
+        "recall": 0.8006783708471886
+      },
+      "evaluation_forward_ms_per_image": 15.465504666790366,
+      "forward_timing_scope": "model forward only; excludes loading, transfer, sigmoid, metrics, export; float32 without AMP"
+    }
+  ],
+  "limitations": [
+    "One seed only; validation and test scores are distinct.",
+    "B recorded epoch wall time includes a machine/application pause; do not claim this is GPU training compute cost.",
+    "Reported peak is PyTorch allocated memory, not full system GPU usage.",
+    "Forward timing is a single model-only measurement; differences between B and C do not establish a robust speed ranking.",
+    "Source/config/lock artifacts provide traceability, not an independent immutable record of historical execution."
+  ]
+}

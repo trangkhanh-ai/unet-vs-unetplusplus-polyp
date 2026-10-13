@@ -1,0 +1,84 @@
+{
+  "status": "passed",
+  "frozen_source_and_staged_hashes_match": true,
+  "markdown_files": [
+    "README.md"
+  ],
+  "contract_tests": {
+    "status": "passed",
+    "tests_run": 48,
+    "failure_count": 0,
+    "error_count": 0,
+    "skipped_count": 0,
+    "seconds": 17.138255700003356,
+    "modules": [
+      "members.khanh.works_done.test_dataset",
+      "members.duy.works_done.test_unet",
+      "members.phuc.works_done.test_unetplusplus",
+      "members.huy.works_done.test_training",
+      "members.tri.works_done.test_metrics",
+      "members.tri.works_done.test_evaluation"
+    ],
+    "python": "3.12.14",
+    "torch": "2.11.0+cu128",
+    "cuda_available": true,
+    "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "tested_scope": "contracts/synthetic integration; no official Kvasir test evaluation"
+  },
+  "reproduction_batch": 1,
+  "reference_deltas": [
+    {
+      "model": "A",
+      "dice_delta": 1.9403077733404217e-07,
+      "iou_delta": 3.3010457056725784e-07
+    },
+    {
+      "model": "B",
+      "dice_delta": -4.3188840470609335e-07,
+      "iou_delta": -5.52327588554391e-07
+    },
+    {
+      "model": "C",
+      "dice_delta": 1.5298783795358872e-07,
+      "iou_delta": 2.2393156662303682e-07
+    }
+  ],
+  "model_graphs": {
+    "tool": "torchview==0.2.7",
+    "reference": "https://github.com/mert-kurttutan/torchview",
+    "input_shape": [
+      1,
+      3,
+      256,
+      256
+    ],
+    "device": "cpu",
+    "graphs": [
+      {
+        "label": "A",
+        "parameters": 7760097,
+        "leaf_calls": 45,
+        "shape_csv": "A_layer_shapes.csv",
+        "svg": "results/model_graphs/A_detailed.svg",
+        "sha256": "ec659204c3e22daaa92ee5e2f3289360b8cca1f0f54759b0d872fa445d1a715b"
+      },
+      {
+        "label": "B",
+        "parameters": 9042177,
+        "leaf_calls": 75,
+        "shape_csv": "B_layer_shapes.csv",
+        "svg": "results/model_graphs/B_detailed.svg",
+        "sha256": "278f9cc9091b54b2dc935cf43bf4e52122c13dd5519d7491aef332ac3aff8076"
+      },
+      {
+        "label": "C",
+        "parameters": 9042276,
+        "leaf_calls": 78,
+        "shape_csv": "C_layer_shapes.csv",
+        "svg": "results/model_graphs/C_detailed.svg",
+        "sha256": "ae0540cff8d47b8eaa1611973785cfd377318ef7c6b77df119c5ccfe25c3ac9f"
+      }
+    ]
+  },
+  "large_weights_storage": "GitHub Release, six assets with SHA256, not Git blobs"
+}

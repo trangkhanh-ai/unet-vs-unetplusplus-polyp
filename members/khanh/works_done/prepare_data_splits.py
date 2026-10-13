@@ -5,6 +5,10 @@ import cv2
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import StratifiedKFold, StratifiedShuffleSplit
+try:
+    from .dataset import read_image_unicode
+except ImportError:  # Hỗ trợ chạy trực tiếp file để kiểm tra dữ liệu.
+    from dataset import read_image_unicode
 
 # ==============================================================================
 # 1. CẤU HÌNH ĐƯỜNG DẪN DỰ ÁN
@@ -57,8 +61,8 @@ def inspect_and_extract_metadata():
         img_path = image_files[sample_id]
         mask_path = mask_files[sample_id]
 
-        img = cv2.imread(str(img_path))
-        mask = cv2.imread(str(mask_path), cv2.IMREAD_GRAYSCALE)
+        img = read_image_unicode(img_path, cv2.IMREAD_COLOR)
+        mask = read_image_unicode(mask_path, cv2.IMREAD_GRAYSCALE)
 
         # Kiểm tra file lỗi / không đọc được
         if img is None or mask is None:

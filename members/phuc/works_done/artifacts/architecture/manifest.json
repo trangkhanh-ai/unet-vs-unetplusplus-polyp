@@ -1,0 +1,41 @@
+{
+  "purpose": "Original schematics of this repository's course implementation",
+  "dataset_or_checkpoint_read": false,
+  "configuration": {
+    "input": [
+      "B",
+      3,
+      256,
+      256
+    ],
+    "base_channels": 32,
+    "batch_norm": false,
+    "padding": "same",
+    "output": "raw logits"
+  },
+  "unet": {
+    "feature_blocks": 9,
+    "pool_edges": 4,
+    "upsample_edges": 4,
+    "direct_skip_edges": 4
+  },
+  "unetplusplus": {
+    "feature_nodes": 15,
+    "pool_edges": 4,
+    "upsample_edges": 10,
+    "same_level_dense_edges": 20,
+    "deep_supervision_heads": 4,
+    "inference_head": "X(0,4)",
+    "pruning_implemented": false
+  },
+  "files": [
+    "unet_course_topology.svg",
+    "unet_course_topology.png",
+    "unetplusplus_course_topology.svg",
+    "unetplusplus_course_topology.png",
+    "unet_word_portrait.svg",
+    "unet_word_portrait.png",
+    "unetplusplus_word_portrait.svg",
+    "unetplusplus_word_portrait.png"
+  ]
+}

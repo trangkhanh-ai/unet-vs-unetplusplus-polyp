@@ -1,0 +1,23 @@
+{
+  "model_name": "unetplusplus",
+  "checkpoint_sha256": "e292d3cf7dbe09d94377279ff839389c3c3824ef87a345a382376da42eeb8eca",
+  "input": "D:\\DoAn\\Đồ án DeepLearning\\unet-vs-unetplusplus-polyp\\Kvasir-SEG\\images\\cju0qkwl35piu0993l0dewei2.jpg",
+  "original_size_hw": [
+    529,
+    622
+  ],
+  "preprocessing": {
+    "image_size": [
+      256,
+      256
+    ],
+    "normalization": "rgb_float_0_1",
+    "mask": "binary_0_1"
+  },
+  "threshold": 0.5,
+  "head_policy": "last",
+  "mask_area_ratio_original": 0.42093010533737746,
+  "original_resolution_policy": "bilinear resize probability, then threshold",
+  "ground_truth_metrics": null,
+  "note": "A prediction alone cannot determine accuracy; no score is invented without a ground truth mask"
+}

@@ -1,0 +1,9 @@
+# Verification environment: Python 3.12, CPU; choose a CUDA wheel separately.
+# Install torch first using the official CPU index as described in README.
+torch==2.12.1
+numpy==2.2.6
+pandas==2.3.3
+albumentations==2.0.8
+opencv-python-headless==4.12.0.88
+matplotlib==3.10.8
+Pillow==11.3.0

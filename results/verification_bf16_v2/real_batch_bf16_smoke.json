@@ -1,0 +1,34 @@
+{
+  "status": "passed",
+  "scope": "train-only in-memory numerical smoke; not an official run or test-set result",
+  "source_checkpoint": "runs/history_fp16_C_unetplusplus_ds_seed42/last.pt",
+  "epoch": 30,
+  "batch_one_based": 28,
+  "image_ids": [
+    "cju77vvcwzcm50850lzoykuva",
+    "cju6vifjlv55z0987un6y4zdo",
+    "cju3v3ac9gyz30755hfqwyp1i",
+    "cju2t9tdwuk700835kv0ljmtl",
+    "cju7d5m0p23kn09871rk7pu3v",
+    "cju7er4kc2opa0801anuxc0eb",
+    "cju8914beokbf0850isxpocrk",
+    "cju7b1ygu1msd0801hywhy0mc"
+  ],
+  "legacy_fp16_heads_finite": [
+    true,
+    true,
+    true,
+    false
+  ],
+  "bf16_heads_finite": [
+    true,
+    true,
+    true,
+    true
+  ],
+  "bf16_deep_supervision_loss": 0.44882482290267944,
+  "bf16_gradients_all_finite": true,
+  "model_state_finite_after_adam_step": true,
+  "bf16_grad_scaler_used": false,
+  "test_images_read": 0
+}
