@@ -1,0 +1,122 @@
+{
+  "status": "compared",
+  "split": "test",
+  "labels": [
+    "A",
+    "B",
+    "C"
+  ],
+  "comparison": [
+    {
+      "experiment": "A",
+      "model": "unet",
+      "deep_supervision": false,
+      "seed": 42,
+      "selected_epoch": 50,
+      "dice": 0.6014174367678824,
+      "iou": 0.4872587524942664,
+      "precision": 0.6851848130126327,
+      "recall": 0.6267466317387427,
+      "parameters": 7760097,
+      "forward_ms_per_image": 6.296295995513598,
+      "forward_images_per_second": 158.8235369989826
+    },
+    {
+      "experiment": "B",
+      "model": "unetplusplus",
+      "deep_supervision": false,
+      "seed": 42,
+      "selected_epoch": 49,
+      "dice": 0.668239984232573,
+      "iou": 0.542088791330187,
+      "precision": 0.7061638812510741,
+      "recall": 0.7369525955078634,
+      "parameters": 9042177,
+      "forward_ms_per_image": 18.42099866985033,
+      "forward_images_per_second": 54.28587330809057
+    },
+    {
+      "experiment": "C",
+      "model": "unetplusplus",
+      "deep_supervision": true,
+      "seed": 42,
+      "selected_epoch": 48,
+      "dice": 0.7390470717877173,
+      "iou": 0.6304042486085379,
+      "precision": 0.777874146785098,
+      "recall": 0.8006783708471886,
+      "parameters": 9042276,
+      "forward_ms_per_image": 15.465504666790366,
+      "forward_images_per_second": 64.66003027675754
+    }
+  ],
+  "paired_differences": {
+    "B": {
+      "reference": "A",
+      "mean_delta_dice": 0.06682254746469049,
+      "improved_images": 98,
+      "worse_images": 51
+    },
+    "C": {
+      "reference": "A",
+      "mean_delta_dice": 0.13762963501983477,
+      "improved_images": 116,
+      "worse_images": 34
+    }
+  },
+  "image_count": 150,
+  "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+  "common_config": {
+    "model_kwargs": {
+      "in_channels": 3,
+      "out_channels": 1,
+      "base_channels": 32,
+      "batch_norm": false
+    },
+    "manifest": "members/khanh/works_done/dataset_splits.csv",
+    "image_size": [
+      256,
+      256
+    ],
+    "seed": 42,
+    "batch_size": 8,
+    "num_workers": 0,
+    "learning_rate": 0.001,
+    "max_epochs": 50,
+    "early_stopping_patience": 10,
+    "device": "cuda",
+    "amp": true,
+    "amp_dtype": "bfloat16",
+    "torch_threads": 4,
+    "augmentation": true,
+    "scheduler": "none",
+    "loss": {
+      "bce_weight": 0.5,
+      "soft_dice_weight": 0.5,
+      "smooth": 1e-06
+    },
+    "evaluation": {
+      "threshold": 0.5,
+      "head_policy": "last",
+      "aggregation": "per_image_then_mean"
+    }
+  },
+  "protocol_lock_sha256": "b7742166ae3330642de840b38fda90907c93f80595ae55573e2fbdc1c6cb4134",
+  "training_curves_exported": true,
+  "posthoc_example_ids": [
+    "cju5f26ebcuai0818xlwh6116",
+    "cju5x00l6m5j608503k78ptee",
+    "cju2rnkt22xep0801as160g9t",
+    "cju7cue9b232j0801qdzk1ykj",
+    "cju0qoxqj9q6s0835b43399p4",
+    "cju8at3s1qqqx0850hcq8nmnq"
+  ],
+  "comparison_source_sha256": "21c0ddc89d3372e218ebc92d33d3095f77b41d35b80f596c7ced6babe3a14801",
+  "posthoc_selection": "2 lowest and 2 highest Dice differences second-minus-first; 2 lowest mean Dice across models; deduplicate",
+  "limitations": [
+    "Only one seed; this is not a statistical significance or multi-seed result",
+    "Timing measures forward only, float32, and excludes preprocessing/transfer/metrics/export",
+    "Metrics use resized input resolution; Kvasir-SEG holdout does not prove external-dataset generalization",
+    "Deep supervision is evaluated with the final head, not the average-head mode from the original paper"
+  ]
+}

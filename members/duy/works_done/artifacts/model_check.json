@@ -1,0 +1,146 @@
+{
+  "status": "passed",
+  "scope": "contract checks, not trained segmentation performance",
+  "provenance": {
+    "created_at_utc": "2026-10-05T13:39:21.432248+00:00",
+    "source_base_commit": "2f0812a33d691ce2068688d5d6c6689b7da77dd6",
+    "source_branch": "codex/duy-unet-baseline",
+    "source_dirty": true,
+    "python": "3.12.14",
+    "torch": "2.12.1+cpu",
+    "platform": "Windows-11-10.0.26200-SP0",
+    "khanh_dataset_sha256": "27d05763c38e11bad4f173ad935bd48f813c44fcd6881977164e9ebd05d053ba",
+    "source_sha256": {
+      "__init__.py": "573bc341f301a22516b45fe19b1b96c730834acecf4f7c6c2bbf9da08cb7e65e",
+      "check_unet.py": "06e7f65308fc43859e34ba3b7ec9e77c7c3113d4e67b8816e74ad11ac8af2748",
+      "model_factory.py": "6d448e0dc9a26f9a72878829f75f6168c80bb09a1271d7c981c1d329db62b66f",
+      "overfit_train_subset.py": "551e938923a5d88aa2c800830538ee8cc11f7519b4eeb10d72e229c7847138cb",
+      "test_unet.py": "46f11498d47323fc02dd5dbc66b89aa3cb7a0495bf3b888665c886c72c93f628",
+      "unet.py": "f52a12d18e11b783d8ddebde203a4afa101e5f1bc220658e3af7914a5140e8fa",
+      "verification_utils.py": "7e15cd0bda8fa0373f66f424c5f6f7589259b4c216129a46db04a4c26e88cc95"
+    }
+  },
+  "device": "cpu",
+  "seed": 42,
+  "configuration": {
+    "in_channels": 3,
+    "out_channels": 1,
+    "base_channels": 32,
+    "batch_norm": false
+  },
+  "parameters": 7760097,
+  "input_shape": [
+    2,
+    3,
+    256,
+    256
+  ],
+  "output_shape": [
+    2,
+    1,
+    256,
+    256
+  ],
+  "stage_shapes": {
+    "encoder1": [
+      2,
+      32,
+      256,
+      256
+    ],
+    "encoder2": [
+      2,
+      64,
+      128,
+      128
+    ],
+    "encoder3": [
+      2,
+      128,
+      64,
+      64
+    ],
+    "encoder4": [
+      2,
+      256,
+      32,
+      32
+    ],
+    "bottleneck": [
+      2,
+      512,
+      16,
+      16
+    ],
+    "decoder4": [
+      2,
+      256,
+      32,
+      32
+    ],
+    "decoder3": [
+      2,
+      128,
+      64,
+      64
+    ],
+    "decoder2": [
+      2,
+      64,
+      128,
+      128
+    ],
+    "decoder1": [
+      2,
+      32,
+      256,
+      256
+    ],
+    "head": [
+      2,
+      1,
+      256,
+      256
+    ]
+  },
+  "diagnostic_loss": 0.5960592031478882,
+  "all_gradients_finite": true,
+  "save_load_max_abs_error": 0.0,
+  "real_data_check": {
+    "split": "train",
+    "split_counts": {
+      "train": 700,
+      "test": 150,
+      "val": 150
+    },
+    "dataset_indices": [
+      442,
+      582
+    ],
+    "image_ids": [
+      "cju6vifjlv55z0987un6y4zdo",
+      "cju849c23kgnk0817cgv2hw1e"
+    ],
+    "manifest_relative_path": "members/khanh/works_done/dataset_splits.csv",
+    "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+    "preprocessing": "Khanh get_transforms('val') applied ONLY to selected TRAIN rows; no augmentation",
+    "validation_or_test_images_read": 0,
+    "upstream_warnings": [
+      "Argument(s) 'value, mask_value' are not valid for transform ShiftScaleRotate",
+      "ShiftScaleRotate is a special case of Affine transform. Please use Affine transform instead."
+    ],
+    "input_shape": [
+      2,
+      3,
+      256,
+      256
+    ],
+    "output_shape": [
+      2,
+      1,
+      256,
+      256
+    ],
+    "finite_loss": 0.6750044822692871
+  }
+}

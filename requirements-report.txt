@@ -1,0 +1,4 @@
+# Optional Word/PPTX builders; inference and training do not need these packages.
+python-docx==1.2.0
+python-pptx==1.0.2
+lxml==6.1.1

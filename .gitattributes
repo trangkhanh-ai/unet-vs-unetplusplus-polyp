@@ -1,0 +1,24 @@
+# Preserve exact checkpoint provenance bytes on Windows, Linux and macOS.
+* text=auto whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+*.py text eol=lf
+*.ps1 text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.svg whitespace=-blank-at-eol
+*.gv whitespace=-blank-at-eol
+members/khanh/works_done/dataset.py -text
+members/duy/works_done/unet.py -text whitespace=cr-at-eol,-blank-at-eof
+members/duy/works_done/model_factory.py -text whitespace=cr-at-eol,-blank-at-eof
+members/phuc/works_done/unetplusplus.py -text
+members/huy/works_done/losses.py -text
+members/huy/works_done/training.py -text
+members/huy/works_done/run_utils.py -text
+members/tri/works_done/metrics.py -text
+members/khanh/works_done/dataset_splits.csv -text
+configs/*.json -text
+results/**/*.json -text
+runs/**/*.json -text
+*.csv -text
+*.png binary
+*.jpg binary
+*.pt binary

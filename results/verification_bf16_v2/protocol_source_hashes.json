@@ -1,0 +1,10 @@
+{
+  "members/khanh/works_done/dataset.py": "b05d32cf97e4ddf7c7078e4fbbdf43db8c9098decedad18dc8c958e2f5859b27",
+  "members/duy/works_done/unet.py": "f52a12d18e11b783d8ddebde203a4afa101e5f1bc220658e3af7914a5140e8fa",
+  "members/duy/works_done/model_factory.py": "6d448e0dc9a26f9a72878829f75f6168c80bb09a1271d7c981c1d329db62b66f",
+  "members/phuc/works_done/unetplusplus.py": "378d02d506f3be670622b25fd5f0296e1c74cd1bd08718ac1ea436ae6fcafe15",
+  "members/huy/works_done/losses.py": "11e20cc078bdb146c45554027b8ac381d503e754963054ab4a4421f50e64fbe5",
+  "members/huy/works_done/training.py": "3c317f92c4c2206cf4dd784b9ca0cfa8302ac905084a50145c778bf5e36babcc",
+  "members/huy/works_done/run_utils.py": "e19c42bfd94841f6de16f3cff8e2db0a55de03e13890da700f7bb8fa9ba0ff24",
+  "members/tri/works_done/metrics.py": "6c1956cdeae0a8c373dceb7359a1e883b2e730ce3845cccc666cb9c838d8696f"
+}

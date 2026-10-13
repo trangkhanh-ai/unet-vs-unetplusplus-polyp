@@ -1,0 +1,15 @@
+{
+  "status": "passed",
+  "scope": "Final Streamlit page initial render and locked A/B/C checkpoint choices; no uploaded-image interaction simulated.",
+  "options": [
+    "A — U-Net",
+    "B — U-Net++",
+    "C — U-Net++ có deep supervision"
+  ],
+  "exceptions": 0,
+  "device_choices": [
+    "Tự chọn",
+    "CPU",
+    "GPU"
+  ]
+}

@@ -1,194 +1,173 @@
-# Đường dẫn: members/khanh/works_done/dataset.py
-import os
-from pathlib import Path
-from typing import Tuple, Optional
+"""Dữ liệu dùng chung: đọc ảnh → augmentation đồng bộ → tensor RGB/mask.
 
+Manifest cố định của Khánh là nguồn chia train/val/test. Không dùng kfold_5
+trong thí nghiệm holdout. Giao diện mặc định vẫn trả (image, mask).
+"""
+from pathlib import Path
+import random
+
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 import cv2
 import numpy as np
 import pandas as pd
 import torch
-from torch.utils.data import Dataset, DataLoader
-import albumentations as A
-from albumentations.pytorch import ToTensorV2
+from torch.utils.data import DataLoader, Dataset
+
+PROJECT_ROOT = Path(__file__).resolve().parents[3]
+DEFAULT_MANIFEST = Path(__file__).with_name("dataset_splits.csv")
+SPLITS = ("train", "val", "test")
 
 
-# ==============================================================================
-# 1. ĐỊNH NGHĨA PIPELINE BIẾN ĐỔI (DATA AUGMENTATION & PREPROCESSING)
-# ==============================================================================
-def get_transforms(split: str, img_size: Tuple[int, int] = (256, 256)) -> A.Compose:
-    """
-    Quy tắc tiền xử lý và augmentation:
-    - Train: Augmentation hình học đồng bộ (Flip, Rotate, ShiftScaleRotate),
-             biến đổi màu sắc chỉ áp dụng trên ảnh RGB (ColorJitter).
-    - Val/Test: Giữ nguyên hình học thực tế, chỉ Resize và chuẩn hóa pixel [0, 1].
-    """
-    if split == "train":
-        return A.Compose([
-            A.Resize(height=img_size[0], width=img_size[1]),
-            # Biến đổi hình học đồng bộ cho cả ảnh và mask
+def read_image_unicode(path: Path, flags: int):
+    """OpenCV giải mã byte để đọc được tên thư mục tiếng Việt trên Windows."""
+    try:
+        data = np.fromfile(str(path), dtype=np.uint8)
+        return cv2.imdecode(data, flags) if data.size else None
+    except (OSError, cv2.error):
+        return None
+
+
+def validate_manifest(frame: pd.DataFrame) -> None:
+    """Kiểm tra ID/split trước khi chia loader; không tự chia lại dữ liệu."""
+    required = {"image_id", "image_path", "mask_path", "split"}
+    missing = required - set(frame.columns)
+    if missing:
+        raise ValueError(f"Manifest thiếu cột: {sorted(missing)}")
+    if frame.empty or frame[list(required)].isna().any().any():
+        raise ValueError("Manifest rỗng hoặc có giá trị thiếu")
+    if frame["image_id"].duplicated().any():
+        raise ValueError("image_id bị trùng; split không độc lập theo ID")
+    if not set(frame["split"]).issubset(SPLITS):
+        raise ValueError("Manifest chứa split ngoài train/val/test")
+    for column in ("is_corrupted", "is_shape_mismatch"):
+        if column in frame and frame[column].astype(str).str.lower().eq("true").any():
+            raise ValueError(f"Manifest đánh dấu lỗi {column}; sửa dữ liệu trước train")
+
+
+def get_transforms(split: str, img_size=(256, 256), seed=42, augment=None) -> A.Compose:
+    """Ảnh nội suy linear; mask nearest. Val/test luôn xử lý cố định."""
+    if split not in SPLITS:
+        raise ValueError(f"Split không hợp lệ: {split}")
+    if len(img_size) != 2 or any(int(v) != v or v < 16 for v in img_size):
+        raise ValueError("img_size phải có hai số nguyên >=16")
+    use_augmentation = split == "train" if augment is None else bool(augment)
+    if split != "train" and use_augmentation:
+        raise ValueError("Không được augmentation ngẫu nhiên trên val/test")
+    transforms = [A.Resize(height=int(img_size[0]), width=int(img_size[1]),
+                           interpolation=cv2.INTER_LINEAR,
+                           mask_interpolation=cv2.INTER_NEAREST)]
+    if use_augmentation:
+        transforms += [
             A.HorizontalFlip(p=0.5),
             A.VerticalFlip(p=0.5),
             A.RandomRotate90(p=0.5),
-            A.ShiftScaleRotate(
-                shift_limit=0.06, scale_limit=0.1, rotate_limit=15, 
-                border_mode=cv2.BORDER_CONSTANT, value=0, mask_value=0, p=0.5
-            ),
-            # Biến đổi màu chỉ áp dụng lên ảnh RGB
+            # Affine thay ShiftScaleRotate: fill/fill_mask đúng Albumentations 2.
+            A.Affine(scale=(0.9, 1.1),
+                     translate_percent={"x": (-0.06, 0.06), "y": (-0.06, 0.06)},
+                     rotate=(-15, 15), interpolation=cv2.INTER_LINEAR,
+                     mask_interpolation=cv2.INTER_NEAREST, keep_ratio=True,
+                     border_mode=cv2.BORDER_CONSTANT, fill=0, fill_mask=0, p=0.5),
             A.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.1, p=0.4),
-            # Chuẩn hóa giá trị điểm ảnh về float32 [0.0, 1.0]
-            A.Normalize(mean=(0.0, 0.0, 0.0), std=(1.0, 1.0, 1.0), max_pixel_value=255.0),
-            ToTensorV2(),
-        ])
-    else:
-        return A.Compose([
-            A.Resize(height=img_size[0], width=img_size[1]),
-            A.Normalize(mean=(0.0, 0.0, 0.0), std=(1.0, 1.0, 1.0), max_pixel_value=255.0),
-            ToTensorV2(),
-        ])
+        ]
+    transforms += [
+        A.Normalize(mean=(0, 0, 0), std=(1, 1, 1), max_pixel_value=255),
+        ToTensorV2(),
+    ]
+    return A.Compose(transforms, seed=int(seed))
 
 
-# ==============================================================================
-# 2. CLASS DATASET CHUẨN PYTORCH
-# ==============================================================================
 class KvasirDataset(Dataset):
-    def __init__(
-        self,
-        csv_path: Optional[str] = None,
-        split: str = "train",
-        project_root: Optional[str] = None,
-        img_size: Tuple[int, int] = (256, 256)
-    ):
-        """
-        Args:
-            csv_path: Đường dẫn tới file dataset_splits.csv.
-            split: 'train', 'val', hoặc 'test'.
-            project_root: Thư mục gốc chứa repo để ghép đường dẫn tương đối.
-            img_size: Kích thước ảnh đầu ra (H, W), mặc định (256, 256).
-        """
-        assert split in ["train", "val", "test"], f"Split '{split}' không hợp lệ (chỉ nhận 'train', 'val', 'test')."
-        self.split = split
+    """Một ảnh RGB float32 [3,H,W], mask nhị phân [1,H,W], tùy chọn ID."""
 
-        # Tự động định vị project root nếu không truyền vào
-        current_dir = Path(__file__).resolve().parent
-        if project_root is None:
-            # works_done -> khanh -> members -> unet-vs-unetplusplus-polyp (root)
-            self.project_root = current_dir.parent.parent.parent
-        else:
-            self.project_root = Path(project_root)
+    def __init__(self, csv_path=None, split="train", project_root=None,
+                 img_size=(256, 256), seed=42, return_id=False, augment=None):
+        if split not in SPLITS:
+            raise ValueError(f"Split không hợp lệ: {split}")
+        self.project_root = Path(project_root or PROJECT_ROOT).resolve()
+        self.csv_path = Path(csv_path or DEFAULT_MANIFEST)
+        if not self.csv_path.is_absolute():
+            self.csv_path = self.project_root / self.csv_path
+        frame = pd.read_csv(self.csv_path, dtype={"image_id": str})
+        validate_manifest(frame)
+        self.df = frame.loc[frame["split"] == split].reset_index(drop=True)
+        if self.df.empty:
+            raise ValueError(f"Không có ảnh cho split {split}")
+        self.split, self.seed = split, int(seed)
+        self.img_size, self.return_id = tuple(img_size), bool(return_id)
+        self.augment = split == "train" if augment is None else bool(augment)
+        self.transform = get_transforms(split, self.img_size, self.seed, self.augment)
 
-        # Định vị file CSV phân chia tập dữ liệu
-        if csv_path is None:
-            self.csv_path = current_dir / "dataset_splits.csv"
-            if not self.csv_path.exists():
-                self.csv_path = current_dir.parent / "works" / "dataset_splits.csv"
-        else:
-            self.csv_path = Path(csv_path)
+    def set_epoch(self, epoch: int) -> None:
+        """Cùng seed/epoch → cùng chuỗi augmentation cho A/B/C và khi resume."""
+        self.transform.set_random_seed((self.seed + int(epoch)) % (2 ** 32))
 
-        if not self.csv_path.exists():
-            raise FileNotFoundError(f"Không tìm thấy file split tại: {self.csv_path}")
-
-        # Đọc dữ liệu và lọc theo split
-        df_all = pd.read_csv(self.csv_path)
-        self.df = df_all[df_all["split"] == self.split].reset_index(drop=True)
-
-        if len(self.df) == 0:
-            raise ValueError(f"Không tìm thấy bản ghi nào cho split: {self.split}")
-
-        self.transform = get_transforms(split=self.split, img_size=img_size)
-
-    def __len__(self) -> int:
+    def __len__(self):
         return len(self.df)
 
-    def __getitem__(self, idx: int) -> Tuple[torch.Tensor, torch.Tensor]:
-        row = self.df.iloc[idx]
+    def _path(self, relative_path):
+        resolved = (self.project_root / str(relative_path).replace("\\", "/")).resolve()
+        if not resolved.is_relative_to(self.project_root):
+            raise ValueError(f"Đường dẫn nằm ngoài project_root: {relative_path}")
+        return resolved
 
-        # Ghép đường dẫn với project_root (chuẩn hóa tương thích Windows/Linux)
-        img_rel_path = Path(row["image_path"].replace("\\", "/"))
-        mask_rel_path = Path(row["mask_path"].replace("\\", "/"))
-
-        img_full_path = self.project_root / img_rel_path
-        mask_full_path = self.project_root / mask_rel_path
-
-        # 1. Đọc ảnh RGB
-        image = cv2.imread(str(img_full_path))
-        if image is None:
-            raise FileNotFoundError(f"Không đọc được ảnh tại: {img_full_path}")
+    def __getitem__(self, index):
+        row = self.df.iloc[index]
+        image_path, mask_path = self._path(row["image_path"]), self._path(row["mask_path"])
+        image = read_image_unicode(image_path, cv2.IMREAD_COLOR)
+        mask = read_image_unicode(mask_path, cv2.IMREAD_GRAYSCALE)
+        if image is None or mask is None:
+            raise FileNotFoundError(f"Không đọc được ảnh/mask: {image_path} / {mask_path}")
+        if image.shape[:2] != mask.shape:
+            raise ValueError(f"Ảnh và mask lệch kích thước: {row['image_id']}")
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-        # 2. Đọc mask nhị phân (Grayscale)
-        mask = cv2.imread(str(mask_full_path), cv2.IMREAD_GRAYSCALE)
-        if mask is None:
-            raise FileNotFoundError(f"Không đọc được mask tại: {mask_full_path}")
-        mask = (mask > 127).astype(np.float32)
-
-        # 3. Áp dụng Augmentation & Transforms
-        augmented = self.transform(image=image, mask=mask)
-        img_tensor = augmented["image"].float()          # Shape: [3, H, W], float32 trong [0, 1]
-        mask_tensor = augmented["mask"].float()
-
-        # Đảm bảo mask có shape [1, H, W] và giá trị tuyệt đối chỉ là 0 hoặc 1
-        if mask_tensor.ndim == 2:
-            mask_tensor = mask_tensor.unsqueeze(0)
-        mask_tensor = (mask_tensor > 0.5).float()
-
-        return img_tensor, mask_tensor
+        mask = (mask > 127).astype(np.uint8)
+        sample = self.transform(image=image, mask=mask)
+        image_tensor = sample["image"].float()
+        mask_tensor = sample["mask"].unsqueeze(0).float()
+        if self.return_id:
+            return image_tensor, mask_tensor, str(row["image_id"])
+        return image_tensor, mask_tensor
 
 
-# ==============================================================================
-# 3. HÀM KHỞI TẠO DATALOADERS DÙNG CHUNG CHO CẢ NHÓM
-# ==============================================================================
-def get_dataloaders(
-    csv_path: Optional[str] = None,
-    project_root: Optional[str] = None,
-    batch_size: int = 8,
-    num_workers: int = 0,
-    img_size: Tuple[int, int] = (256, 256)
-) -> Tuple[DataLoader, DataLoader, DataLoader]:
-    """
-    Tạo DataLoaders cho cả 3 tập train, val, test.
-    Mặc định num_workers=0 để tránh xung đột đa tiến trình trên Windows.
-    """
-    train_dataset = KvasirDataset(csv_path=csv_path, split="train", project_root=project_root, img_size=img_size)
-    val_dataset   = KvasirDataset(csv_path=csv_path, split="val", project_root=project_root, img_size=img_size)
-    test_dataset  = KvasirDataset(csv_path=csv_path, split="test", project_root=project_root, img_size=img_size)
-
-    train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True,  num_workers=num_workers, pin_memory=True)
-    val_loader   = DataLoader(val_dataset,   batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-    test_loader  = DataLoader(test_dataset,  batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True)
-
-    return train_loader, val_loader, test_loader
+def seed_worker(worker_id):
+    """Worker riêng có RNG riêng; num_workers=0 dùng cho chạy chính thức."""
+    worker_seed = torch.initial_seed() % (2 ** 32)
+    random.seed(worker_seed)
+    np.random.seed(worker_seed)
+    info = torch.utils.data.get_worker_info()
+    if info is not None:
+        info.dataset.transform.set_random_seed(worker_seed)
 
 
-# ==============================================================================
-# 4. KHỐI KIỂM THỬ BÀN GIAO (VERIFICATION SMOKE TEST)
-# ==============================================================================
+def get_dataloader(split, csv_path=None, project_root=None, batch_size=8,
+                   num_workers=0, img_size=(256, 256), seed=42, return_id=False,
+                   augment=None, shuffle=None, pin_memory=None):
+    """Tạo đúng một split: trainer chỉ gọi train/val, evaluator mới gọi test."""
+    if batch_size < 1 or num_workers < 0:
+        raise ValueError("batch_size phải >0 và num_workers phải >=0")
+    dataset = KvasirDataset(csv_path, split, project_root, img_size, seed, return_id, augment)
+    shuffle = split == "train" if shuffle is None else bool(shuffle)
+    if split != "train" and shuffle:
+        raise ValueError("Val/test cần giữ thứ tự ID, không shuffle")
+    generator = torch.Generator().manual_seed(int(seed))
+    return DataLoader(dataset, batch_size=batch_size, shuffle=shuffle,
+                      num_workers=num_workers, generator=generator,
+                      worker_init_fn=seed_worker, drop_last=False,
+                      persistent_workers=False,
+                      pin_memory=torch.cuda.is_available() if pin_memory is None else pin_memory)
+
+
+def get_dataloaders(csv_path=None, project_root=None, batch_size=8,
+                    num_workers=0, img_size=(256, 256), seed=42, return_id=False):
+    """Giữ tương thích giao diện cũ; train chính thức dùng get_dataloader."""
+    return tuple(get_dataloader(split, csv_path, project_root, batch_size,
+                                num_workers, img_size, seed, return_id)
+                 for split in SPLITS)
+
+
 if __name__ == "__main__":
-    print("=" * 60)
-    print(" KIỂM THỬ BÀN GIAO: KVASIR DATASET & DATALOADER")
-    print("=" * 60)
-
-    try:
-        train_loader, val_loader, test_loader = get_dataloaders(batch_size=4)
-        print(f"[*] Số batch Train: {len(train_loader)} (Tổng ảnh: {len(train_loader.dataset)})")
-        print(f"[*] Số batch Val  : {len(val_loader)} (Tổng ảnh: {len(val_loader.dataset)})")
-        print(f"[*] Số batch Test : {len(test_loader)} (Tổng ảnh: {len(test_loader.dataset)})")
-
-        # Lấy thử 1 batch đầu tiên từ train_loader
-        sample_images, sample_masks = next(iter(train_loader))
-
-        print("\n--- Kiểm tra chi tiết 1 Batch mẫu ---")
-        print(f"[*] images.shape : {sample_images.shape} (Kỳ vọng: [4, 3, 256, 256])")
-        print(f"[*] images.dtype : {sample_images.dtype} (Kỳ vọng: torch.float32)")
-        print(f"[*] images range : min = {sample_images.min():.4f}, max = {sample_images.max():.4f}")
-        print(f"[*] masks.shape  : {sample_masks.shape} (Kỳ vọng: [4, 1, 256, 256])")
-        print(f"[*] masks.dtype  : {sample_masks.dtype} (Kỳ vọng: torch.float32)")
-        print(f"[*] masks values : {torch.unique(sample_masks).tolist()} (Kỳ vọng: [0.0, 1.0])")
-
-        # Xác thực tiêu chí bàn giao
-        assert sample_images.shape == (4, 3, 256, 256), "Sai kích thước batch ảnh!"
-        assert sample_masks.shape == (4, 1, 256, 256), "Sai kích thước batch mask!"
-        assert set(torch.unique(sample_masks).tolist()).issubset({0.0, 1.0}), "Mask chứa giá trị khác ngoài 0 và 1!"
-        print("\n[V] BÀN GIAO THÀNH CÔNG: Dữ liệu chuẩn xác 100% theo hợp đồng giao diện!")
-
-    except Exception as e:
-        print(f"\n[X] Phát hiện lỗi trong quá trình nạp batch: {e}")
+    train_loader = get_dataloader("train", batch_size=2)
+    images, masks = next(iter(train_loader))
+    print(f"Train: {len(train_loader.dataset)} ảnh; RGB {tuple(images.shape)}; mask {tuple(masks.shape)}")
+    print(f"Giá trị mask: {torch.unique(masks).tolist()}")
