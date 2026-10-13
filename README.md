@@ -82,6 +82,8 @@ CPU chạy inference/test được nhưng chậm hơn; không cần huấn luy�
 
 Linux/macOS dùng `python3.12` thay `py -3.12`; Python môi trường nằm ở `./.venv/bin/python`.
 
+macOS dùng `--device cpu`; script cài `torch==2.11.0` từ PyPI vì wheel macOS không dùng hậu tố `+cpu` của Windows/Linux. Pipeline này không chọn MPS hoặc CUDA trên Mac.
+
 ### 2.4. Tải mô hình đã train và mở demo
 
 ```powershell

@@ -18,6 +18,8 @@ def main():
     parser.add_argument("--visualizations", action="store_true")
     parser.add_argument("--reports", action="store_true")
     args = parser.parse_args()
+    if sys.platform == "darwin" and args.device == "cuda":
+        raise RuntimeError("macOS không có CUDA; dùng --device cpu cho pipeline này")
     if sys.version_info[:2] != (3, 12):
         raise RuntimeError("Dùng Python3.12 để theo đúng môi trường đồ án")
     directory = ROOT / ".venv"
@@ -25,8 +27,10 @@ def main():
     if not python.exists():
         venv.EnvBuilder(with_pip=True).create(directory)
     wheel = "cu128" if args.device == "cuda" else "cpu"
+    torch_command = (["-m", "pip", "install", "torch==2.11.0"] if sys.platform == "darwin"
+                     else ["-m", "pip", "install", f"torch==2.11.0+{wheel}", "--index-url", f"https://download.pytorch.org/whl/{wheel}"])
     commands = [
-        ["-m", "pip", "install", f"torch==2.11.0+{wheel}", "--index-url", f"https://download.pytorch.org/whl/{wheel}"],
+        torch_command,
         ["-m", "pip", "install", "-r", "requirements.txt"],
     ]
     if args.visualizations:
