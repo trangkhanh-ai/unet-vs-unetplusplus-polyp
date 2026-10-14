@@ -1,0 +1,196 @@
+{
+  "status": "passed",
+  "stage": "checkpoints",
+  "scope": "real train/val acceptance only; no official test evaluation or new final results",
+  "synthetic_data": false,
+  "test_images_read": 0,
+  "verification_script_sha256": "4bb8dfc8102c86b36f1889b10da9509a2743e9ef7bc183f2f1b8daa13782bff2",
+  "source": {
+    "created_utc": "2026-10-14T12:22:36.939724+00:00",
+    "source_commit": "c61dd02bda6e0a9aa661ea5b39948615c309b568",
+    "branch": "codex/huy-training-verification",
+    "dirty": true,
+    "source_hashes": {
+      "members/khanh/works_done/dataset.py": "b05d32cf97e4ddf7c7078e4fbbdf43db8c9098decedad18dc8c958e2f5859b27",
+      "members/duy/works_done/unet.py": "f52a12d18e11b783d8ddebde203a4afa101e5f1bc220658e3af7914a5140e8fa",
+      "members/duy/works_done/model_factory.py": "6d448e0dc9a26f9a72878829f75f6168c80bb09a1271d7c981c1d329db62b66f",
+      "members/phuc/works_done/unetplusplus.py": "378d02d506f3be670622b25fd5f0296e1c74cd1bd08718ac1ea436ae6fcafe15",
+      "members/huy/works_done/losses.py": "11e20cc078bdb146c45554027b8ac381d503e754963054ab4a4421f50e64fbe5",
+      "members/huy/works_done/training.py": "3c317f92c4c2206cf4dd784b9ca0cfa8302ac905084a50145c778bf5e36babcc",
+      "members/huy/works_done/run_utils.py": "e19c42bfd94841f6de16f3cff8e2db0a55de03e13890da700f7bb8fa9ba0ff24",
+      "members/tri/works_done/metrics.py": "6c1956cdeae0a8c373dceb7359a1e883b2e730ce3845cccc666cb9c838d8696f"
+    },
+    "environment": {
+      "python": "3.12.6 (tags/v3.12.6:a4a2d2b, Sep  6 2024, 20:11:23) [MSC v.1940 64 bit (AMD64)]",
+      "platform": "Windows-11-10.0.26200-SP0",
+      "torch": "2.11.0+cu128",
+      "numpy": "2.2.6",
+      "device": "cuda",
+      "cuda_build": "12.8",
+      "cuda_available": true,
+      "deterministic_algorithms": true,
+      "torch_threads": 4,
+      "gpu": "NVIDIA GeForce RTX 3050 Laptop GPU",
+      "gpu_total_memory_bytes": 4294443008
+    }
+  },
+  "packages": {
+    "torch": "2.11.0+cu128",
+    "numpy": "2.2.6",
+    "pandas": "2.3.3",
+    "albumentations": "2.0.8",
+    "opencv-python-headless": "4.12.0.88"
+  },
+  "checks": [
+    {
+      "label": "A",
+      "kind": "best",
+      "path": "runs/A_unet_seed42/best.pt",
+      "sha256": "403c2d60b07f1d647241f30572a626d9d821d496e03adebe02c14805d12d4aa3",
+      "epoch": 50,
+      "best_epoch": 50,
+      "image_ids": [
+        "cju0qkwl35piu0993l0dewei2",
+        "cju0qx73cjw570799j4n5cjze"
+      ],
+      "split": "train",
+      "head_count": 1,
+      "output_shape": [
+        2,
+        1,
+        256,
+        256
+      ],
+      "resume_metadata_and_rewind_guard_verified": true,
+      "protocol_lock_verified": true,
+      "loss_reference_passed": true,
+      "all_head_gradients_passed": true,
+      "all_parameter_gradients_finite": true,
+      "diagnostic_train_loss": 0.3978748321533203
+    },
+    {
+      "label": "A",
+      "kind": "last",
+      "path": "runs/A_unet_seed42/last.pt",
+      "sha256": "403c2d60b07f1d647241f30572a626d9d821d496e03adebe02c14805d12d4aa3",
+      "epoch": 50,
+      "best_epoch": 50,
+      "image_ids": [
+        "cju0qkwl35piu0993l0dewei2",
+        "cju0qx73cjw570799j4n5cjze"
+      ],
+      "split": "train",
+      "head_count": 1,
+      "output_shape": [
+        2,
+        1,
+        256,
+        256
+      ],
+      "resume_metadata_and_rewind_guard_verified": true,
+      "protocol_lock_verified": false
+    },
+    {
+      "label": "B",
+      "kind": "best",
+      "path": "runs/B_unetplusplus_seed42/best.pt",
+      "sha256": "d140326faf18b44b71226d47be0824b71076a92d0a36bb439c91aef9c4e83834",
+      "epoch": 49,
+      "best_epoch": 49,
+      "image_ids": [
+        "cju0qkwl35piu0993l0dewei2",
+        "cju0qx73cjw570799j4n5cjze"
+      ],
+      "split": "train",
+      "head_count": 1,
+      "output_shape": [
+        2,
+        1,
+        256,
+        256
+      ],
+      "resume_metadata_and_rewind_guard_verified": true,
+      "protocol_lock_verified": true,
+      "loss_reference_passed": true,
+      "all_head_gradients_passed": true,
+      "all_parameter_gradients_finite": true,
+      "diagnostic_train_loss": 0.33586883544921875
+    },
+    {
+      "label": "B",
+      "kind": "last",
+      "path": "runs/B_unetplusplus_seed42/last.pt",
+      "sha256": "4cf4c1aabd89153273ed6ab59d38939fa1a3653991293b89b3e83a330946ec4e",
+      "epoch": 50,
+      "best_epoch": 49,
+      "image_ids": [
+        "cju0qkwl35piu0993l0dewei2",
+        "cju0qx73cjw570799j4n5cjze"
+      ],
+      "split": "train",
+      "head_count": 1,
+      "output_shape": [
+        2,
+        1,
+        256,
+        256
+      ],
+      "resume_metadata_and_rewind_guard_verified": true,
+      "protocol_lock_verified": false
+    },
+    {
+      "label": "C",
+      "kind": "best",
+      "path": "runs/C_unetplusplus_ds_seed42/best.pt",
+      "sha256": "e292d3cf7dbe09d94377279ff839389c3c3824ef87a345a382376da42eeb8eca",
+      "epoch": 48,
+      "best_epoch": 48,
+      "image_ids": [
+        "cju0qkwl35piu0993l0dewei2",
+        "cju0qx73cjw570799j4n5cjze"
+      ],
+      "split": "train",
+      "head_count": 4,
+      "output_shape": [
+        2,
+        1,
+        256,
+        256
+      ],
+      "resume_metadata_and_rewind_guard_verified": true,
+      "protocol_lock_verified": true,
+      "loss_reference_passed": true,
+      "all_head_gradients_passed": true,
+      "all_parameter_gradients_finite": true,
+      "diagnostic_train_loss": 0.3974551260471344
+    },
+    {
+      "label": "C",
+      "kind": "last",
+      "path": "runs/C_unetplusplus_ds_seed42/last.pt",
+      "sha256": "f4063234a3855253972117305d2ce5faf526e7a7d359835fcc0b08f595825d19",
+      "epoch": 50,
+      "best_epoch": 48,
+      "image_ids": [
+        "cju0qkwl35piu0993l0dewei2",
+        "cju0qx73cjw570799j4n5cjze"
+      ],
+      "split": "train",
+      "head_count": 4,
+      "output_shape": [
+        2,
+        1,
+        256,
+        256
+      ],
+      "resume_metadata_and_rewind_guard_verified": true,
+      "protocol_lock_verified": false
+    }
+  ],
+  "unique_original_files_read": 4,
+  "unique_images_by_split": {
+    "train": 2,
+    "val": 0,
+    "test": 0
+  }
+}

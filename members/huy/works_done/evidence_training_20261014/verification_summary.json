@@ -1,0 +1,140 @@
+{
+  "status": "passed",
+  "date_local": "2026-10-14",
+  "scope": "Huy real-data training acceptance; official runs received from Duy, not retrained",
+  "synthetic_data": false,
+  "stages": {
+    "checkpoints": {
+      "status": "passed",
+      "evidence": "checkpoints.json"
+    },
+    "overfit": {
+      "status": "passed",
+      "evidence": "overfit.json"
+    },
+    "pilots": {
+      "status": "passed",
+      "evidence": "pilots.json"
+    }
+  },
+  "resume": {
+    "model": "A / U-Net",
+    "epochs": 2,
+    "continuous_vs_resumed_exact": true,
+    "not_compared": [
+      "epoch_seconds",
+      "peak_gpu_memory_bytes"
+    ],
+    "B_C_full_resume_not_executed": true
+  },
+  "trainer_data_access": {
+    "train_unique_images": 700,
+    "validation_unique_images": 150,
+    "test_unique_images": 0
+  },
+  "data_audit": {
+    "pairs": 1000,
+    "status": "passed",
+    "includes_test_data_integrity_checks": true,
+    "test_model_evaluation": false
+  },
+  "protected_original_files": {
+    "count": 32,
+    "changed": [],
+    "sha256": {
+      "runs/A_unet_seed42/best.pt": "403c2d60b07f1d647241f30572a626d9d821d496e03adebe02c14805d12d4aa3",
+      "runs/A_unet_seed42/environment.json": "5506f957956ffd8b51124a1d595da3b16a8e8872f58988c5753b5d1f1bdf409e",
+      "runs/A_unet_seed42/history.csv": "0765e519f389253605633b635707c366aa5d2265a97d89cc619d9c16cc967617",
+      "runs/A_unet_seed42/last.pt": "403c2d60b07f1d647241f30572a626d9d821d496e03adebe02c14805d12d4aa3",
+      "runs/A_unet_seed42/resolved_config.json": "cf93f42207327723487f21f30fd163d8ca4e12b8ef22724fe22fa1c00a2126e0",
+      "runs/A_unet_seed42/summary.json": "c990b241e183e8c31f0913b3f419513eaa3946d89035d90145997a7498be37ca",
+      "runs/B_unetplusplus_seed42/best.pt": "d140326faf18b44b71226d47be0824b71076a92d0a36bb439c91aef9c4e83834",
+      "runs/B_unetplusplus_seed42/environment.json": "e1e08abc1e1e1b0ef5e47525efaba4676712b504d77ad3abb1399d0981ceb473",
+      "runs/B_unetplusplus_seed42/history.csv": "01faf5cd8b38b8d98c5d28225cc0911949a6028c07b7d905c5a41dfc7168cc48",
+      "runs/B_unetplusplus_seed42/last.pt": "4cf4c1aabd89153273ed6ab59d38939fa1a3653991293b89b3e83a330946ec4e",
+      "runs/B_unetplusplus_seed42/resolved_config.json": "471cc3f4e8b5ca9f76854c28f7ee9ea9b4b0979ca8ece4a1da6cc35f57a9da8f",
+      "runs/B_unetplusplus_seed42/summary.json": "5cc2621d7faba82592a83ebf8800863022850d390387dcf0e33a767f84a7f674",
+      "runs/C_unetplusplus_ds_seed42/best.pt": "e292d3cf7dbe09d94377279ff839389c3c3824ef87a345a382376da42eeb8eca",
+      "runs/C_unetplusplus_ds_seed42/environment.json": "2d10ea8aae8bac266b15828bb3db9fcd08191cbdf73c345022fb43d9de3e6fd1",
+      "runs/C_unetplusplus_ds_seed42/history.csv": "a8066e974de29c60848eefa5ad200373b95761808661c0c4c1987d287423b086",
+      "runs/C_unetplusplus_ds_seed42/last.pt": "f4063234a3855253972117305d2ce5faf526e7a7d359835fcc0b08f595825d19",
+      "runs/C_unetplusplus_ds_seed42/resolved_config.json": "8d288ab37666d506e178437f5ef3644696fe044a4076703c2a917abc28282277",
+      "runs/C_unetplusplus_ds_seed42/summary.json": "a518c210795feb39c5e19a55669f13d9184a9edf3edf8036717567b6e6effcfd",
+      "configs/pretrained_release.json": "d561b0eb957331469502cf413fab6e3741e08aece6b840294e3b6942b44ee95d",
+      "configs/protocol_lock.json": "b7742166ae3330642de840b38fda90907c93f80595ae55573e2fbdc1c6cb4134",
+      "configs/unet.json": "95d33123fe92406a00084417077e216648b8df89788e816de5e1e97408270903",
+      "configs/unetplusplus.json": "97363c58288257b96648cdf050c51f0b7d088d019e43034dd79a8a5338f6b31c",
+      "configs/unetplusplus_ds.json": "ac5cdba3d1bf71b077569ebbfeb80e8e4176c0c90001767d29225a2ead04d537",
+      "members/khanh/works_done/dataset.py": "b05d32cf97e4ddf7c7078e4fbbdf43db8c9098decedad18dc8c958e2f5859b27",
+      "members/duy/works_done/unet.py": "f52a12d18e11b783d8ddebde203a4afa101e5f1bc220658e3af7914a5140e8fa",
+      "members/duy/works_done/model_factory.py": "6d448e0dc9a26f9a72878829f75f6168c80bb09a1271d7c981c1d329db62b66f",
+      "members/phuc/works_done/unetplusplus.py": "378d02d506f3be670622b25fd5f0296e1c74cd1bd08718ac1ea436ae6fcafe15",
+      "members/huy/works_done/losses.py": "11e20cc078bdb146c45554027b8ac381d503e754963054ab4a4421f50e64fbe5",
+      "members/huy/works_done/training.py": "3c317f92c4c2206cf4dd784b9ca0cfa8302ac905084a50145c778bf5e36babcc",
+      "members/huy/works_done/run_utils.py": "e19c42bfd94841f6de16f3cff8e2db0a55de03e13890da700f7bb8fa9ba0ff24",
+      "members/tri/works_done/metrics.py": "6c1956cdeae0a8c373dceb7359a1e883b2e730ce3845cccc666cb9c838d8696f",
+      "members/khanh/works_done/dataset_splits.csv": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28"
+    }
+  },
+  "verification_script_sha256": "4bb8dfc8102c86b36f1889b10da9509a2743e9ef7bc183f2f1b8daa13782bff2",
+  "clean_base_checkout_test": {
+    "status": "passed",
+    "scope": "Revised snapshot tool executed externally against a clean detached Windows checkout of base HEAD; current uncommitted implementation is recorded separately.",
+    "checkout_commit": "c61dd02bda6e0a9aa661ea5b39948615c309b568",
+    "checkout_clean": true,
+    "files_checked": 2058,
+    "snapshot_tool_sha256": "f9af43e0414b1183fc21f49d365b8c2b75031406344d2692ac135754c911ec90",
+    "release_source_and_manifest_match": true,
+    "hash_policy": "sha256_raw_bytes_all_files; no text or image normalization",
+    "snapshot_path": "results/huy_acceptance_20261014/clean_checkout_snapshot.json"
+  },
+  "artifact_provenance_note": "Base HEAD plus dirty working-tree hashes; no claim that new code is already committed or reviewed.",
+  "raw_output_root": "results/huy_acceptance_20261014",
+  "remaining_human_review": [
+    "Huy explains existing implementation",
+    "Duy and Tri accept handover"
+  ],
+  "limitations": [
+    "Only one seed/split in official runs",
+    "No new 50-epoch training or test evaluation",
+    "No patient/video independence verification",
+    "Pilot timing is not a benchmark"
+  ],
+  "current_snapshot_check": {
+    "status": "passed",
+    "schema_version": 2,
+    "checked_files": 2059,
+    "changed_or_missing": [],
+    "file": "input_snapshot.json"
+  },
+  "syntax_check": {
+    "status": "passed",
+    "files": [
+      "input_snapshot.py",
+      "verify_training_real.py"
+    ]
+  },
+  "git_diff_check": {
+    "status": "passed",
+    "note": "Tracked diff; new Python files also parsed successfully."
+  },
+  "raw_read_logs_sha256": {
+    "checkpoints": "9f563851678f3d8d8f8f7c060ea82f51a97a4a291ac3c42a8d9b0bda2203a055",
+    "overfit": "62f12a218b32df0fc7f7e06112d4064774349f4a393a849bb50fdb2b21557688",
+    "pilots": "84dd120bf565cd2e86482f39f569e284164628d35011d822a600e1251fc59e8d"
+  },
+  "evidence_files_sha256": {
+    "checkpoints.json": "1dd8a613790949ba86472c6917a58bd5259f3db4ed5b0d3be950fc3f921d0f0f",
+    "clean_checkout_check.json": "fa8ab41a677392e4a52fdc5e0ae7b6ce551cb70e5f5fd6dce74d9a6b41ec2f87",
+    "data_audit.json": "23e48c5b5cb39b425c434bd1d746271c8b38260777537a311af3331136da5667",
+    "environment_packages.txt": "11b3e6cb91091c9af53ad087d497859218e3990daa406bc4af915a7329fc1f48",
+    "input_snapshot.json": "403ed80c33af6c9f22cebe8829c1398c4a6d177d9991ab0a8a9fa0f9d1751dd5",
+    "overfit.json": "e971547e4538548af69cf86133fc084e8de40fc73e523f05dec87ce0f9b77881",
+    "overfit_history.csv": "416a1cca6949fe89f0f1d54a1e3fd0dd29d87eb3e09db11685d9a758426ae36e",
+    "pilot_history.csv": "de6421c076cc5d02523d2a9ed6d92e6292016c3aff7583a8e3b4492c2a996b09",
+    "pilots.json": "7a0495ef2a9b78f53c939d53e062f1bce92f99187484f1c14f341afa3b338832",
+    "run_registry.csv": "5eceb9287e6f4bcaff4aca2b323b6105d6bc67f202275275abe2d47260e6e605",
+    "train_memorization.png": "acaf7c56eba97e48fe85a695de712834dedfdf2facfc6afe739c43b62561da2b"
+  },
+  "handover_sha256": "40a3c83247706b1d23f3aec1302ef667d1172e13b49b42a63c247d20e565d3ee"
+}
