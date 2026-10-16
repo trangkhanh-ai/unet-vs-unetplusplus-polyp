@@ -1,0 +1,11 @@
+{
+  "status": "passed",
+  "scope": "Revised snapshot tool executed externally against a clean detached Windows checkout of base HEAD; current uncommitted implementation is recorded separately.",
+  "checkout_commit": "c61dd02bda6e0a9aa661ea5b39948615c309b568",
+  "checkout_clean": true,
+  "files_checked": 2058,
+  "snapshot_tool_sha256": "f9af43e0414b1183fc21f49d365b8c2b75031406344d2692ac135754c911ec90",
+  "release_source_and_manifest_match": true,
+  "hash_policy": "sha256_raw_bytes_all_files; no text or image normalization",
+  "snapshot_path": "results/huy_acceptance_20261014/clean_checkout_snapshot.json"
+}
