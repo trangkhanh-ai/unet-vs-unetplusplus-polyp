@@ -1,0 +1,3 @@
+# Optional: automatic PyTorch module/tensor graphs. Native Graphviz is also needed.
+torchview==0.2.7
+graphviz==0.21

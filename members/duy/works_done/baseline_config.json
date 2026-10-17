@@ -1,0 +1,17 @@
+{
+  "status": "proposed_protocol_not_official_training_results",
+  "model": "unet",
+  "model_kwargs": {"in_channels": 3, "out_channels": 1, "base_channels": 32, "batch_norm": false},
+  "image_size": [256, 256],
+  "manifest": "members/khanh/works_done/dataset_splits.csv",
+  "split_policy": "existing_holdout_700_150_150_ignore_kfold_5",
+  "seed": 42,
+  "batch_size": 8,
+  "optimizer": "Adam",
+  "learning_rate": 0.001,
+  "max_epochs": 50,
+  "early_stopping_patience": 10,
+  "loss": {"bce_weight": 0.5, "soft_dice_weight": 0.5, "smooth": 0.000001, "reduction": "per_image_then_mean"},
+  "evaluation": {"threshold": 0.5, "aggregation": "per_image_then_mean", "best_checkpoint": "max_val_dice_tie_min_val_loss"},
+  "note": "Huy and Phuc must confirm block/normalization/upsampling/training settings before A/B runs."
+}

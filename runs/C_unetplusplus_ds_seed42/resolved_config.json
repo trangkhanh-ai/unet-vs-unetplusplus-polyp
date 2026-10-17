@@ -1,0 +1,37 @@
+{
+  "model": "unetplusplus",
+  "model_kwargs": {
+    "in_channels": 3,
+    "out_channels": 1,
+    "base_channels": 32,
+    "batch_norm": false,
+    "deep_supervision": true
+  },
+  "manifest": "members/khanh/works_done/dataset_splits.csv",
+  "image_size": [
+    256,
+    256
+  ],
+  "seed": 42,
+  "batch_size": 8,
+  "num_workers": 0,
+  "learning_rate": 0.001,
+  "max_epochs": 50,
+  "early_stopping_patience": 10,
+  "device": "cuda",
+  "amp": true,
+  "amp_dtype": "bfloat16",
+  "torch_threads": 4,
+  "augmentation": true,
+  "scheduler": "none",
+  "loss": {
+    "bce_weight": 0.5,
+    "soft_dice_weight": 0.5,
+    "smooth": 1e-06
+  },
+  "evaluation": {
+    "threshold": 0.5,
+    "head_policy": "last",
+    "aggregation": "per_image_then_mean"
+  }
+}

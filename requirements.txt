@@ -1,0 +1,9 @@
+# Python 3.12; install torch separately (CUDA 12.8 or CPU, same 2.11 release).
+numpy==2.2.6
+pandas==2.3.3
+albumentations==2.0.8
+opencv-python-headless==4.12.0.88
+matplotlib==3.10.8
+Pillow==11.3.0
+scikit-learn==1.7.2
+streamlit==1.50.0

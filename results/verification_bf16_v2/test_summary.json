@@ -1,0 +1,21 @@
+{
+  "status": "passed",
+  "tests_run": 48,
+  "failure_count": 0,
+  "error_count": 0,
+  "skipped_count": 0,
+  "seconds": 21.88910510018468,
+  "modules": [
+    "members.khanh.works_done.test_dataset",
+    "members.duy.works_done.test_unet",
+    "members.phuc.works_done.test_unetplusplus",
+    "members.huy.works_done.test_training",
+    "members.tri.works_done.test_metrics",
+    "members.tri.works_done.test_evaluation"
+  ],
+  "python": "3.12.14",
+  "torch": "2.11.0+cu128",
+  "cuda_available": true,
+  "gpu": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "tested_scope": "contracts/synthetic integration; no official Kvasir test evaluation"
+}

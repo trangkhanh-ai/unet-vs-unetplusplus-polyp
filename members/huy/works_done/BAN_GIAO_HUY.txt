@@ -1,0 +1,128 @@
+BÀN GIAO PHẦN HUY — KIỂM CHỨNG NGÀY 14/10/2026
+
+Phạm vi: loss, trainer chung A/B/C, checkpoint/resume và minh chứng training.
+Đối chiếu bảng việc H01–H07 trong bản xuất Notion và code main c61dd02.
+Code loss/trainer và các run chính thức đã có trong bản Duy bàn giao, có AI hỗ trợ.
+Đợt này Codex kiểm tra, bổ sung công cụ xác minh và chạy thực tế trên máy Huy;
+không ghi nhận Huy đã tự viết, tự chạy thủ công hoặc đã giải thích được toàn bộ code.
+
+1. ĐÃ LÀM VÀ MỨC ĐỘ NGHIỆM THU
+
+H01 — Audit/readiness: phần PR #2 đã có trong main. Chạy lại audit của Khánh:
+1.000 cặp hợp lệ, train/val/test = 700/150/150, không có issue trong phạm vi audit.
+Audit có đọc ảnh test để kiểm tra dữ liệu; không thực hiện suy luận hay tune test.
+Chưa xác minh độc lập theo bệnh nhân/video hoặc toàn bộ ảnh gần trùng nhau.
+
+H02 — Snapshot/provenance: sửa input_snapshot.py để dùng danh sách file hiện tại,
+không phụ thuộc members/README.md đã bị xóa. Schema v2 ghi HEAD/tree/branch,
+dirty state và SHA-256 của byte thực tế, gồm cả Python chưa commit.
+HEAD là commit nền, không đại diện đầy đủ cho các sửa đổi chưa commit.
+Chính sách EOL theo .gitattributes hiện có: Python thông thường LF; các file lõi
+gắn với checkpoint và config/manifest giữ nguyên byte. Không chuẩn hóa byte ảnh.
+Snapshot cũ là lịch sử, không lấy kết quả mismatch với code mới làm lỗi dữ liệu.
+Kết quả checkout sạch và snapshot hiện tại: evidence_training_20261014/verification_summary.json.
+
+H03 — Môi trường/loss: venv riêng, Python 3.12.6, PyTorch 2.11.0+cu128;
+RTX 3050 Laptop 4 GB nhận CUDA và BF16; pip check đạt. Phiên bản gói thực tế
+trong environment_packages.txt. Không khẳng định môi trường giống hoàn toàn
+máy Duy (Python 3.12.14, RTX 5060 Laptop). Lần cài đầu hết dung lượng TEMP trên C;
+đã cài thành công khi chuyển TEMP của tiến trình sang D, không thay môi trường hệ thống.
+Đối chiếu loss với phép tính độc lập float64 trên ảnh train thật: đạt.
+Cả bốn head C có gradient khác 0, hữu hạn; các gradient tham số đều hữu hạn.
+
+H04 — Trainer/checkpoint/resume: đã chạy trainer thật cho cả A/B/C, nạp lại best
+bằng loader của Trí. A chạy liên tục 2 epoch và A chạy 1 epoch rồi resume lên 2
+cho model/optimizer/RNG/scaler/best/patience và các metric trong history bằng nhau
+chính xác. Không so bằng nhau hai trường thời gian/VRAM.
+Kiểm tra metadata resume cho đủ 6 checkpoint chính thức; chặn resume best cũ của
+B/C vào thư mục đã có epoch mới hơn. Chưa chạy tiếp B/C để đối chiếu resume từng bit.
+
+H05 — Overfit và pilot: đạt kiểm tra kỹ thuật trên dữ liệu thật.
+Overfit dùng đúng bài chẩn đoán có sẵn của nhóm: 2 ảnh train, 128x128, U-Net base8,
+200 bước, không augmentation, CPU FP32; thay vào loss chung và metric chung.
+Loss 0.67714262 -> 0.00777659; train Dice 0.45480387 -> 0.99285183.
+Checkpoint nạp lại cho logits giống hệt; overlay đã được xem trực tiếp.
+Đây là kiểm tra học thuộc hai ảnh, không phải chất lượng trên test hay cấu hình run chính.
+Pilot A/B/C giữ 256x256, base32, batch8, seed42, Adam 0.001, BF16,
+đủ 700 train/150 val; chỉ đổi device và số epoch. Không có suy luận ảnh test.
+A/B/C hoàn thành epoch 1; A có thêm epoch 2 cho thử resume.
+Val Dice epoch 1 của cả ba là 0; A epoch 2 là 0.21563702. Pilot xác minh pipeline,
+không đủ để kết luận mô hình nào tốt hơn. Loss vẫn hữu hạn và checkpoint nạp được.
+Thời gian/VRAM theo từng epoch ở pilot_history.csv. VRAM là bộ nhớ tensor đỉnh
+do PyTorch ghi nhận, không phải toàn bộ VRAM mà tiến trình/driver sử dụng.
+Thời gian gồm train + validation trên máy đang sử dụng, không phải benchmark tốc độ.
+
+H06 — Run chính thức: đã tiếp nhận và kiểm tra các run A/B/C seed42, đủ 50 epoch
+do Duy bàn giao. Không huấn luyện lại 50 epoch trong đợt này, không tạo kết quả mới.
+Best validation Dice của bản bàn giao: A 0.63373865 (epoch50),
+B 0.71161833 (epoch49), C 0.78882225 (epoch48).
+Chỉ một seed/split, không báo độ lệch chuẩn giữa nhiều seed. Wall time run B có
+thời gian máy nghỉ nên không dùng làm thời gian tính toán để so sánh A/B/C.
+
+H07 — Gói bàn giao sẵn trên máy: đủ 6 best/last chính thức, kiểm tra SHA/size,
+log/config/metadata khớp; nạp bằng loader của Trí và forward trên hai ảnh train đạt.
+Best của A/B/C khớp protocol_lock. Registry gồm nguồn, seed, commit nền,
+data hash, GPU, config/log, checkpoint SHA/link và các pilot cục bộ.
+Đã kiểm tra bằng code của Trí; chưa thay thế việc Trí/Duy tự nhận và nghiệm thu.
+
+2. HUY CẦN GIẢI THÍCH PHẦN NÀO
+
+Loss: với từng ảnh, lấy trung bình BCEWithLogits trên pixel và tính soft Dice
+từ sigmoid(logits). Loss = 0.5 * BCE + 0.5 * (1 - soft Dice), smooth = 1e-6;
+cuối cùng trung bình theo ảnh. Không sigmoid lần nữa trước BCEWithLogits.
+A/B có một logits tensor; C có 4 logits head, loss training là trung bình 4 loss.
+Validation dùng head cuối cho C, cùng threshold 0.5 và metric trung bình theo ảnh.
+
+Trainer: dùng loader train với augmentation, loader val không augmentation;
+model.train() khi cập nhật gradient, model.eval() và không gradient khi validation.
+Adam lr 0.001, không scheduler; train BF16 trên GPU, loss và validation FP32.
+BF16 không dùng GradScaler trong cấu hình hiện tại. Early stopping patience10.
+Chọn best theo val Dice cao nhất; nếu Dice bằng nhau thì chọn val loss thấp hơn.
+Test không tham gia chọn epoch, threshold hay điều chỉnh cấu hình.
+
+Checkpoint: best phục vụ đánh giá theo validation; last để tiếp tục huấn luyện.
+Resume cần model, optimizer, RNG, lịch sử, best và patience, không chỉ trọng số.
+Trainer kiểm tra config/manifest/source hashes; seed theo epoch giữ thứ tự batch
+và augmentation khi resume. Không ghi đè lịch sử mới hơn bằng checkpoint cũ.
+Phép thử A trên cùng máy chứng minh đường resume đang dùng hoạt động đúng;
+không suy ra tái lập từng bit giữa GPU, phiên bản phần mềm hoặc mọi tình huống.
+
+Đoạn có thể đưa vào phần phương pháp sau khi Huy/nhóm đọc và xác nhận:
+"Ba cấu hình được huấn luyện bằng trainer chung trên split cố định 700 ảnh train
+và 150 ảnh validation, với seed42, ảnh 256x256 và batch8. Hàm mục tiêu kết hợp
+BCEWithLogits và soft Dice với trọng số bằng nhau; cấu hình deep supervision lấy
+trung bình loss của bốn head. Checkpoint được chọn theo validation Dice, ưu tiên
+validation loss thấp hơn khi Dice bằng nhau. Tập test không tham gia training
+hay lựa chọn checkpoint. Các run chính thức do Duy bàn giao; kiểm chứng bổ sung
+trên máy Huy gồm đối chiếu loss, overfit hai ảnh train, pilot A/B/C và thử resume."
+
+3. FILE VÀ CÁCH CHẠY LẠI
+
+Mở PowerShell tại thư mục gốc repo. Dùng venv đã cài, mỗi stage chọn thư mục MỚI:
+
+./.venv/Scripts/python.exe -m members.huy.works_done.verify_training_real --stage checkpoints --device cuda --output results/huy_recheck/checkpoints
+./.venv/Scripts/python.exe -m members.huy.works_done.verify_training_real --stage overfit --device cpu --output results/huy_recheck/overfit
+./.venv/Scripts/python.exe -m members.huy.works_done.verify_training_real --stage pilots --device cuda --output results/huy_recheck/pilots
+
+Nếu cần lấy checkpoint trên checkout khác, theo công cụ có sẵn của nhóm:
+./.venv/Scripts/python.exe scripts/prepare_project.py --include-last
+
+Kiểm tra snapshot byte thực tế của đợt này:
+./.venv/Scripts/python.exe members/huy/works_done/input_snapshot.py --check members/huy/works_done/evidence_training_20261014/input_snapshot.json
+Nếu code đã thay đổi, kết quả khác hash là đúng; tạo snapshot mới ở đường dẫn mới,
+không sửa snapshot lịch sử để làm cho kiểm tra pass.
+
+Minh chứng gọn: evidence_training_20261014/verification_summary.json,
+checkpoints.json, overfit.json, pilots.json, data_audit.json, run_registry.csv,
+pilot_history.csv, overfit_history.csv, train_memorization.png và snapshot.
+Log đọc file, checkpoint pilot và output đầy đủ nằm trong thư mục local được ignore:
+results/huy_acceptance_20261014/. Những checkpoint này không phải kết quả chính thức.
+Checkpoint chính thức nằm ở runs/{A_unet_seed42,B_unetplusplus_seed42,
+C_unetplusplus_ds_seed42}/{best,last}.pt; SHA/link gốc ở configs/pretrained_release.json.
+
+Đợt này chỉ sửa input_snapshot.py và thêm verify_training_real.py trong code Huy;
+giữ nguyên loss/trainer/model/data/config chính thức để giữ provenance checkpoint.
+Không tạo dataset giả, model giả hoặc số liệu giả. Không chạy suite test cũ có
+dữ liệu tổng hợp; các kiểm tra nêu trên dùng dữ liệu thật của nhóm.
+Phần còn lại: Huy đọc/giải thích code, Duy/Trí review và nghiệm thu; các thí nghiệm
+thêm seed hoặc thay protocol cần dựa trên quyết định chung và log chạy thực tế.

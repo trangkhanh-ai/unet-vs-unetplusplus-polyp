@@ -22,15 +22,32 @@ def sha256(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def git(*args):
+    return subprocess.check_output(["git", *args], cwd=ROOT, text=True,
+                                   encoding="utf-8").strip()
+
+
 def create_snapshot(destination):
-    paths = {MANIFEST.as_posix(), "members/khanh/works_done/dataset.py",
-        "members/khanh/works_done/prepare_data_splits.py", "members/README.md",
-        "members/huy/works_done/check_loader_readiness.py", "members/huy/works_done/input_snapshot.py"}
+    # Snapshot the current sources, not the removed historical members/README.md.
+    # Include untracked Python additions so HEAD is never presented as their revision.
+    paths = {MANIFEST.as_posix(), ".gitattributes", "README.md", "project.py"}
+    paths.update(p.relative_to(ROOT).as_posix() for p in (ROOT / "members").rglob("*.py"))
+    paths.update(p.relative_to(ROOT).as_posix() for p in (ROOT / "scripts").glob("*.py"))
+    paths.update(p.relative_to(ROOT).as_posix() for p in (ROOT / "configs").glob("*.json"))
+    paths.update(p.name for p in ROOT.glob("requirements*.txt"))
     with (ROOT / MANIFEST).open(encoding="utf-8-sig", newline="") as file:
         for row in csv.DictReader(file):
             paths.update(row[key].replace("\\", "/") for key in ("image_path", "mask_path"))
-    result = {"schema_version": 1, "created_at_utc": datetime.now(timezone.utc).isoformat(),
-        "repo_commit": subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=ROOT, text=True).strip(),
+    status = git("status", "--porcelain=v1", "--untracked-files=all")
+    result = {"schema_version": 2, "created_at_utc": datetime.now(timezone.utc).isoformat(),
+        "hash_policy": "sha256_raw_bytes_all_files; no text or image normalization",
+        "scope": "listed source/config/dependency files and every original manifest image/mask",
+        "git_head_commit": git("rev-parse", "HEAD"),
+        "git_head_tree": git("rev-parse", "HEAD^{tree}"),
+        "branch": git("branch", "--show-current"),
+        "working_tree_dirty": bool(status), "working_tree_status": status.splitlines(),
+        "revision_note": "HEAD is the base revision; files hashes describe executed working-tree bytes, including uncommitted files.",
+        "attributes_sha256": sha256(ROOT / ".gitattributes"),
         "files": {name: sha256(resolve(name)) for name in sorted(paths)}}
     destination.parent.mkdir(parents=True, exist_ok=True)
     with destination.open("x", encoding="utf-8") as file:
@@ -41,14 +58,17 @@ def create_snapshot(destination):
 
 def check_snapshot(source):
     data = json.loads(source.read_text(encoding="utf-8"))
-    if data.get("schema_version") != 1:
+    if data.get("schema_version") not in (1, 2):
         raise ValueError("Unknown snapshot version.")
     changed = []
     for name, expected in data["files"].items():
         path = resolve(name)
         if not path.is_file() or sha256(path) != expected:
             changed.append(name)
-    print(json.dumps({"checked_files": len(data["files"]), "unchanged": not changed, "changed_or_missing": changed}, indent=2))
+    print(json.dumps({"schema_version": data["schema_version"],
+        "checked_files": len(data["files"]), "unchanged": not changed,
+        "changed_or_missing": changed,
+        "note": "Only listed files are checked. An old snapshot is historical evidence, not the current source revision."}, indent=2))
     return 1 if changed else 0
 
 
