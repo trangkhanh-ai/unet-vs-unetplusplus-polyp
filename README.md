@@ -497,7 +497,23 @@ Các câu thường cần trả lời:
 | Thiếu dữ liệu ở source ZIP | Chép Kvasir-SEG/images+masks; giữ nguyên manifest |
 | Tưởng48tests là Dice | Verification là kiểm tra kỹ thuật; điểm ở comparison.csv |
 
-## 15. Tài liệu và repo tham khảo
+## 15. Báo cáo và biểu đồ bổ sung (14/11/2026)
+
+[Tải báo cáo Word Nhóm 06](reports/BaoCao_DeepLearning_Nhom_06.docx) — 52 trang, 23 hình và 21 bảng. Bản này thêm hai hình kiến trúc có ghi nguồn từ bài U-Net/U-Net++; sơ đồ theo đúng code của nhóm vẫn nằm ở Chương 3. Ba biểu đồ mới thể hiện số tham số, chênh lệch Dice ghép cặp kèm khoảng bootstrap và kết quả từng head của C. Bốn bảng được chuyển nguyên số liệu xuống Phụ lục E.
+
+Tạo lại ba biểu đồ từ CSV hiện có, không huấn luyện lại:
+
+```powershell
+./.venv/Scripts/python.exe -X utf8 -B scripts/build_additional_charts.py
+```
+
+Hình và thông tin nguồn nằm ở `results/report_figures/visual_report_20261114/`: `paper_figure_sources.json` ghi nguồn hình bài báo; `chart_sources.json` ghi SHA256 của CSV đầu vào. Ảnh demo thật, CSV phân tích từng head và script tính lại bootstrap/Wilcoxon nằm ở `results/report_figures/checklist_20261114/`. Các phân tích bổ sung dùng checkpoint đã chốt, không thay kết quả A/B/C chính và không phải đánh giá nhiều seed.
+
+Kiểm tra trước khi đưa code lên GitHub: 48 kiểm tra gốc và 10 kiểm tra bổ sung đều đạt. Các kiểm tra này xác nhận hoạt động của code; không thay thế điểm Dice/IoU trên dữ liệu thật.
+
+`scripts/update_visual_report.py` dùng bản báo cáo hoàn thiện trước khi thêm biểu đồ làm đầu vào để dựng bản Word mới; không dùng chính bản đầu ra làm đầu vào lần nữa. Đây là công cụ biên tập tài liệu tùy chọn, không cần để chạy mô hình hoặc demo.
+
+## 16. Tài liệu và repo tham khảo
 
 - [U-Net — Ronneberger et al.,2015](https://arxiv.org/abs/1505.04597).
 - [U-Net++ — Zhou et al.,2018](https://arxiv.org/abs/1807.10165).

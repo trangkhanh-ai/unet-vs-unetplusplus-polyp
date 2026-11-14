@@ -1,0 +1,44 @@
+{
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 0,
+  "ci": "percentile 2.5/97.5",
+  "wilcoxon": "paired, two-sided, scipy defaults; no multiplicity adjustment",
+  "source_sha256": {
+    "results\\A_test\\per_image.csv": "1e870d09a7f7f55013dce727a325ca10ed04dd683afbcc3276abef4600e9da2c",
+    "results\\B_test\\per_image.csv": "e5863547f9f0593d0219cf630c100fb85c0af9fbbb34be9dd7be05dbff85a404",
+    "results\\C_test\\per_image.csv": "0fdc01da995b5fc8a905edaccd58d93012eddeb7cfed6bb932d0f24cdcd6428a"
+  },
+  "comparisons": [
+    {
+      "comparison": "B_vs_A",
+      "delta": 0.06682254746469049,
+      "ci_low": 0.03300131136594708,
+      "ci_high": 0.10117118223534804,
+      "p_wilcoxon": 0.0004833465864840919,
+      "images_up": 98,
+      "images_down": 51,
+      "images_equal": 1
+    },
+    {
+      "comparison": "C_vs_B",
+      "delta": 0.07080708755514431,
+      "ci_low": 0.04911987125739723,
+      "ci_high": 0.09455430424370072,
+      "p_wilcoxon": 4.1357688373502507e-10,
+      "images_up": 105,
+      "images_down": 45,
+      "images_equal": 0
+    },
+    {
+      "comparison": "C_vs_A",
+      "delta": 0.13762963501983477,
+      "ci_low": 0.1024243321271633,
+      "ci_high": 0.1722200025916567,
+      "p_wilcoxon": 9.989739405556718e-13,
+      "images_up": 116,
+      "images_down": 34,
+      "images_equal": 0
+    }
+  ],
+  "scope": "Conditional on fixed checkpoints and 150 test images. Not uncertainty over seeds/training runs. Patient/video independence remains unverified."
+}

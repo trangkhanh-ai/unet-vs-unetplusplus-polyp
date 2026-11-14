@@ -1,0 +1,32 @@
+[
+  {
+    "file": "paper_unet_architecture.png",
+    "paper": "1505.04597",
+    "url": "https://arxiv.org/pdf/1505.04597",
+    "figure": "Figure 1",
+    "page_1_based": 2,
+    "crop_pdf_points": [
+      130,
+      452,
+      130,
+      110
+    ],
+    "pdf_sha256": "a3172b2124f38e260dc2c7ed968d87c31bc94dbc19a42a7ab3dcbd7534319c44",
+    "usage": "Architecture illustration credited to original authors; not experimental results of the team"
+  },
+  {
+    "file": "paper_unetplusplus_nested.png",
+    "paper": "1807.10165",
+    "url": "https://arxiv.org/pdf/1807.10165",
+    "figure": "Figure 1(a)",
+    "page_1_based": 3,
+    "crop_pdf_points": [
+      130,
+      536,
+      261,
+      111
+    ],
+    "pdf_sha256": "fd3fdf5bf3841b1b4aa033c0b2ba222145f4c47b5f79a3f1cc5a977dea463fdb",
+    "usage": "Architecture illustration credited to original authors; not experimental results of the team"
+  }
+]

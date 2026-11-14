@@ -1,0 +1,14 @@
+{
+  "sources": {
+    "results/comparison/comparison.csv": "377f590ac9648a37591dddfe77cf9590ca8d07c23f8ffd3601eb0a031912831d",
+    "results/report_figures/checklist_20261114/paired_statistics.csv": "467a1805d0392c2b9a2ce679a160e965c97eb17beb7032628858cbfe00d9a4bc",
+    "results/report_figures/checklist_20261114/head_metrics_val.csv": "010a4595496abacced969b2839a67543aca93f06a62b091b13c56d32d8900131",
+    "results/report_figures/checklist_20261114/head_metrics_test.csv": "0597c28636b99a984af90518ca5745594ccff621add7e222a08e493834ba4725"
+  },
+  "figures": [
+    "model_parameters.png",
+    "paired_dice_uncertainty.png",
+    "deep_supervision_heads.png"
+  ],
+  "scope": "Charts of fixed recorded results; no new training, model selection or clinical claims."
+}

@@ -1,0 +1,7 @@
+{
+  "url": "http://127.0.0.1:8501/",
+  "model": "C — U-Net++ có deep supervision",
+  "test_image_id": "cju13cgqmnhwn0988yrainhcp",
+  "ui_text": "keyboard_double_arrow_left\n\nMô hình đã huấn luyện\n\nC — U-Net++ có deep supervision\n\nThiết bị\n\nTự chọn\n\nCheckpoint được chọn bằng validation trước khi đánh giá test.\n\nDeploy\nPhân đoạn polyp với U-Net và U-Net++\n\nTải ảnh nội soi và xem vùng polyp mà mô hình dự đoán.\n\nChọn ảnh nội soi\n\nDrag and drop file here\nLimit 200MB per file • JPG, JPEG, PNG\nBrowse files\ncju13cgqmnhwn0988yrainhcp.jpg\n31.8KB\n\nPhân đoạn ảnh\n\nKết quả: U-Net++ có deep supervision\n\nẢnh gốc\n\nMask dự đoán: trắng là polyp\n\nVùng dự đoán tô xanh\n\nNgưỡng xác suất: 0.50. Chưa có mask thật của ảnh tải lên nên chưa thể tính Dice/IoU.\n\nTải mask PNG\n\nTải ảnh overlay\n\nDemo học thuật hỗ trợ trình bày đồ án; kết quả không phải chẩn đoán y khoa.",
+  "method": "Actual Streamlit UI in headless Microsoft Edge; overlay downloaded through UI"
+}
