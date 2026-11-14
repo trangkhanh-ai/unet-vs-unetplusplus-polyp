@@ -51,7 +51,7 @@ def checkpoint_options(project_root=PROJECT_ROOT):
                 raise ValueError("Mô hình hiện tại không khớp checkpoint đã khóa trong báo cáo")
             human_name = model_display_name(entry["model"],entry["config"].get("model_kwargs",{}))
             options.append({"checkpoint":str(path),"display_name":f"{entry['label']} — {human_name}"})
-        return options
+        return append_extended_runs(options, project_root)
     for path in sorted((project_root / "runs").glob("**/best.pt")):
         if any(part.startswith(("pilot_", "history_")) for part in path.relative_to(project_root / "runs").parts):
             continue
@@ -66,6 +66,21 @@ def checkpoint_options(project_root=PROJECT_ROOT):
         prefix = path.parent.name.split("_",1)[0]
         display_name = f"{prefix} — {human_name}" if prefix in {"A","B","C"} else human_name
         options.append({"checkpoint":str(path.resolve()),"display_name":display_name})
+    return options
+
+
+def append_extended_runs(options, project_root):
+    """Giữ A/B/C đã khóa; thêm run mở rộng hoàn tất dù tên là C_v2."""
+    for path in sorted((project_root / "runs").glob("*/summary.json")):
+        summary = json.loads(path.read_text(encoding="utf-8"))
+        checkpoint = path.parent / "best.pt"
+        if summary.get("trainer_kind") != "extension_20261111":
+            continue
+        if summary.get("status") not in {"completed", "early_stopped"} or not checkpoint.is_file():
+            continue
+        human = model_display_name(summary["model_name"], summary["config"]["model_kwargs"])
+        options.append({"checkpoint": str(checkpoint.resolve()),
+                        "display_name": f"Mở rộng {path.parent.name} — {human}"})
     return options
 
 

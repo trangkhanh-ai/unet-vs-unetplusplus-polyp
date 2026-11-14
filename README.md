@@ -4,6 +4,73 @@
 
 Bản tích hợp do **Nguyễn Bảo Duy — dzyuu1612** bàn giao, có AI hỗ trợ triển khai. Các folder giữ phân công của nhóm; từng thành viên cần tự đọc, chạy và xác nhận phần mình.
 
+## Bộ nộp Nhóm 06 cập nhật 14/11/2026
+
+Bộ nộp dùng đúng cấu trúc repo, không dùng bản độc lập `Data/Weights` của lần rà soát trước.
+`CacFileSource.py` là CLI gọi các mô-đun trong năm folder `members/*/works_done`.
+Mô hình, Dataset, loss và metric dùng chung với `project.py`; tám source đã gắn SHA với checkpoint được giữ nguyên.
+
+```text
+1.ChuongTrinh/
+├── CacFileSource.py              # CLI dùng cho bộ nộp
+├── project.py                   # CLI gốc của repo
+├── members/{duy,khanh,phuc,huy,tri}/works_done/
+├── Kvasir-SEG/{images,masks}/
+├── configs/                     # cấu hình và khóa SHA256
+├── runs/{A_unet_seed42,B_unetplusplus_seed42,C_unetplusplus_ds_seed42}/
+│   └── best.pt, history.csv, summary.json, resolved_config.json
+├── results/                     # điểm tham chiếu và minh chứng chạy lại
+├── scripts/
+└── README.md
+```
+
+Nhận ZIP: giải nén, mở terminal tại `1.ChuongTrinh`. Clone GitHub: mở terminal tại repo root.
+Cài môi trường theo mục 2, sau đó:
+
+```powershell
+$PolypPython = './.venv/Scripts/python.exe'
+# Máy Duy có thể dùng '../.venv-polyp/Scripts/python.exe'
+& $PolypPython -X utf8 -B CacFileSource.py prepare
+& $PolypPython -X utf8 -B CacFileSource.py check
+& $PolypPython -X utf8 -B CacFileSource.py compare --device cuda
+& $PolypPython -X utf8 -B CacFileSource.py demo --port 8501
+```
+
+`check`: 48 kiểm tra gốc + 10 kiểm tra bổ sung. `compare`: đánh giá 150 ảnh mỗi model, xuất 450 mask,
+bảng/hình cùng bootstrap/Wilcoxon trong output mới; `--device cpu` dùng khi không có CUDA.
+CI và kiểm định ở đây có điều kiện trên những checkpoint cố định; chưa chứng minh độc lập patient/video hay biến thiên nhiều seed.
+`CacFileSource.py splits` chỉ audit manifest hiện có, **không tự chia lại** dữ liệu đã khóa.
+
+### Huấn luyện và resume
+
+```powershell
+# Giao thức tham chiếu, tạo run mới
+& $PolypPython CacFileSource.py train --model C --name C_new --device cuda
+# Mở rộng riêng, chưa có kết quả 150 epoch trong bảng báo cáo
+& $PolypPython CacFileSource.py train --model C --protocol extension --name C_v2 --epochs 150 --patience 20 --scheduler cosine --warmup 5 --batch_norm --init he --device cuda
+# Resume bằng cách thêm --resume vào đúng lệnh đã chạy
+```
+
+Thiếu `last.pt` sẽ báo lỗi. Resume không cho thay LR/seed/loss/manifest/source; cosine phải giữ nguyên
+ngân sách epoch. Các run mở rộng hoàn tất như `C_v2` xuất hiện trong demo; không cần hậu tố `_retrain`.
+Không ghi đè ba run tham chiếu và không có `--force`. Khi muốn tiếp tục run tham chiếu cũ, tải thêm
+`last.pt` qua `prepare --include-last`, rồi dùng CLI gốc trong mục 12.
+
+### Phân tích head và đóng gói
+
+```powershell
+& $PolypPython CacFileSource.py evaluate --weights runs/C_unetplusplus_ds_seed42/best.pt --split val --head all --device cuda
+& $PolypPython CacFileSource.py layers --model B
+& $PolypPython scripts/build_submission.py --output reports/1.ChuongTrinh.zip
+```
+
+Test cần khóa đúng checkpoint; run mới phải tạo khóa mới bằng `project.py lock` trước đánh giá.
+Phân tích head bổ sung không thay chính sách head cuối của bảng kết quả chính.
+ZIP giữ nguyên byte checkpoint gốc để SHA khớp `protocol_lock.json` (lớn hơn bộ trọng số rút gọn).
+Có `submission_manifest.json` với SHA256 từng file; không chứa venv, Git, cache hoặc run pilot.
+Báo cáo Word Nhóm 06 được bàn giao cùng ZIP, giữ khung ba chương, cập nhật mục lục tự động.
+Tỷ lệ đóng góp cần các thành viên xác nhận; không tự suy từ số file hoặc số commit.
+
 ## Mục lục
 
 1. [Kết quả thật và hình ảnh](#1-kết-quả-thật-và-hình-ảnh)
@@ -52,10 +119,10 @@ Audit xác nhận **1.000 cặp ảnh/mask** và **48/48 kiểm tra kỹ thuật
 
 ### 2.1. Clone đúng bản code
 
-Cần Git và **Python 3.12**. Bản tích hợp nằm ở nhánh sau; khi nhóm merge vào main có thể clone main.
+Cần Git và **Python 3.12**. Nhánh `main` có CLI `CacFileSource.py`, trainer mở rộng và phân tích thống kê/head. Clone hoặc pull bản mới trước khi chạy các lệnh bên dưới.
 
 ```powershell
-git clone --branch codex/full-polyp-project https://github.com/trangkhanh-ai/unet-vs-unetplusplus-polyp.git
+git clone https://github.com/trangkhanh-ai/unet-vs-unetplusplus-polyp.git
 Set-Location -LiteralPath 'unet-vs-unetplusplus-polyp'
 ```
 
