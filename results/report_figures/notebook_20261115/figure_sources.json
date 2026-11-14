@@ -1,0 +1,18 @@
+{
+  "figures": [
+    {
+      "file": "unet_chu_thich.png",
+      "sha256": "32912fdf10771c8337bd6bb9ed4e4a8ba396a8618e25fa41c62c08912a275f08",
+      "provided_by": "Duy",
+      "role": "Annotated implementation schematic; not an experimental result",
+      "reference": "https://arxiv.org/abs/1505.04597"
+    },
+    {
+      "file": "unetplusplus_chu_thich.png",
+      "sha256": "ed83acbed60285b16e40971d28ea3f58427adaa2b4550a757c5ec3fce5898757",
+      "provided_by": "Duy",
+      "role": "Annotated implementation schematic; not an experimental result",
+      "reference": "https://arxiv.org/abs/1807.10165"
+    }
+  ]
+}

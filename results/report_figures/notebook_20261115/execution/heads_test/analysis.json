@@ -1,0 +1,40 @@
+{
+  "split": "test",
+  "checkpoint_sha256": "977379cffca85fbc874e9ee1c10e3e8b7edf29087bf39fa34854c8583d93a9fd",
+  "threshold": 0.5,
+  "image_count": 150,
+  "selected_policy": "last (fixed before test)",
+  "role": "Exploratory reproduction; does not replace the official test results",
+  "metrics": {
+    "1": {
+      "dice": 0.3328326088918326,
+      "iou": 0.2242283246496612,
+      "precision": 0.4140067672450894,
+      "recall": 0.40430440353653474
+    },
+    "2": {
+      "dice": 0.5606384854637557,
+      "iou": 0.41937186056329123,
+      "precision": 0.5971639511874778,
+      "recall": 0.6519238461531383
+    },
+    "3": {
+      "dice": 0.7268413575131657,
+      "iou": 0.6100047350403888,
+      "precision": 0.7562149751908207,
+      "recall": 0.7930066082303144
+    },
+    "4": {
+      "dice": 0.7390470717877173,
+      "iou": 0.6304042486085379,
+      "precision": 0.777874146785098,
+      "recall": 0.8006783708471885
+    },
+    "mean": {
+      "dice": 0.7182688033591385,
+      "iou": 0.6091427959393799,
+      "precision": 0.783524695480935,
+      "recall": 0.7582702684549026
+    }
+  }
+}

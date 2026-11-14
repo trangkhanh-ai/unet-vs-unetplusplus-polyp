@@ -1,0 +1,19 @@
+{
+  "pages": 54,
+  "tables_preserved": 21,
+  "images": 23,
+  "figures_replaced": 2,
+  "other_images_unchanged": 21,
+  "original_report_unchanged": true,
+  "reference_files_unchanged": 29,
+  "all_pages_visually_reviewed": true,
+  "latest_changed_pairs_reviewed": [
+    "pair-11.png",
+    "pair-12.png",
+    "pair-13.png",
+    "pair-21.png",
+    "pair-23.png",
+    "pair-27.png"
+  ],
+  "report_sha256": "8b6c97e7f3d18dd475790209780cd4e4fddf7daa7d77575c0ad395c1ff6e74d8"
+}

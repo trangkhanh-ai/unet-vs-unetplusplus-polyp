@@ -4,7 +4,35 @@
 
 Bản tích hợp do **Nguyễn Bảo Duy — dzyuu1612** bàn giao, có AI hỗ trợ triển khai. Các folder giữ phân công của nhóm; từng thành viên cần tự đọc, chạy và xác nhận phần mình.
 
-## Bộ nộp Nhóm 06 cập nhật 14/11/2026
+## Chạy và học bằng notebook cập nhật 15/11/2026
+
+| Notebook | Nội dung |
+|---|---|
+| [Đồ án đầy đủ](notebooks/DoAn_Nhom06_DayDu.ipynb) | Code cốt lõi thực thi trực tiếp trong 82 cell: Dataset, U-Net, U-Net++, bảng shape từng tầng, loss, trainer, checkpoint, khóa trước test, evaluator, biểu đồ theo báo cáo, thống kê, head và dự đoán |
+| [Giao diện và biểu đồ](notebooks/GiaoDien_Va_BieuDo.ipynb) | Toàn bộ source Streamlit và ba biểu đồ bổ sung; 11 cell chạy kiểm tra app, server và xuất hình |
+
+1. Cài môi trường Python 3.12/PyTorch theo mục 2, đặt đủ dữ liệu Kvasir-SEG.
+2. Cài thêm `./.venv/Scripts/python.exe -X utf8 -m pip install -r requirements-notebook.txt`.
+3. Mở notebook trong VS Code/Jupyter, chọn kernel Python của `.venv` (máy Duy có thể chọn `.venv-polyp`), chọn **Restart Kernel → Run All**.
+4. `TRAIN_FROM_SCRATCH=True` chạy protocol 50 epoch tối đa cho cả ba model. Đặt `REUSE_COMPLETED_RUN=None` để chạy mới; tên một thư mục đã hoàn thành trong `runs/` cho phép đọc lại lượt đó. Output ghi rõ đang train hay đang đọc lại.
+5. `TRAIN_FROM_SCRATCH=False` đánh giá lại checkpoint báo cáo, không huấn luyện mới. Chạy `scripts/prepare_project.py` nếu thiếu checkpoint tham chiếu.
+
+Bản notebook đã thực thi lưu cả output. Số trong báo cáo và số của lượt notebook được đối chiếu riêng qua `doi_chieu_bao_cao.csv`; không tự thay kết quả báo cáo. Run mới, khóa và kết quả nằm trong `runs/notebook_<thời gian>/` và `results/notebook_<thời gian>/`. Các checkpoint của lượt mới được giữ tại máy Duy; máy khác có thể chọn `TRAIN_FROM_SCRATCH=False` và tải checkpoint tham chiếu để chạy nhanh. Nếu chọn True và không có thư mục đọc lại, notebook sẽ huấn luyện lượt mới. Notebook giao diện mở rồi dừng server khi Run All kết thúc; muốn xem lâu hơn, dừng trước cell tắt server hoặc dùng CLI demo.
+
+**Kiểm chứng ngày 15/11/2026:** đã huấn luyện mới đủ 50 epoch cho A/B/C (150 epoch), trọng số và toàn bộ lịch sử metric khớp bản gốc. Sau khi đặt trạng thái đánh giá trong kernel giống evaluator CLI, cả bốn metric từng ảnh trên 150 ảnh test của mỗi mô hình đều khớp hoàn toàn. Bản cuối chạy đủ **82 + 11 cell**, không có lỗi. [Minh chứng thực thi](results/report_figures/notebook_20261115/execution_summary.json) ghi hash code notebook, số epoch và đối chiếu. Bản notebook lưu sẵn tham số đọc lại lượt đã chạy để Run All trên máy Duy không tốn thêm thời gian train; đặt `REUSE_COMPLETED_RUN=None` nếu muốn huấn luyện lại. Đây là tái lập seed 42, không phải bằng chứng trên seed độc lập mới.
+
+Hai hình kiến trúc Duy gửi đã được thay vào Hình 3.4 và 3.5 trong báo cáo; hình có chú thích cấu hình nhóm và nguồn tham khảo. Notebook là bản chính để đọc luồng đồ án. Các module `.py` được giữ để tương thích checkpoint đã khóa, CLI và Streamlit; code mô hình, Dataset, loss và trainer đều hiển thị đầy đủ trong notebook, không chỉ là cell gọi `%run`.
+
+Chạy toàn bộ cell từ terminal và lưu output:
+
+```powershell
+./.venv/Scripts/python.exe -X utf8 -B scripts/execute_notebook.py
+./.venv/Scripts/python.exe -X utf8 -B scripts/execute_notebook.py --notebook notebooks/GiaoDien_Va_BieuDo.ipynb
+```
+
+Notebook chính dùng kernel riêng và lưu tiến độ từng cell ở `notebooks/.runtime/`. Đây là thư mục tạm, không đưa lên GitHub. GPU 8 GB của máy Duy chạy được batch 8; train CPU có thể rất lâu, nên dùng chế độ checkpoint khi chỉ muốn học và tái lập báo cáo.
+
+## Bộ nộp Nhóm 06
 
 Bộ nộp dùng đúng cấu trúc repo, không dùng bản độc lập `Data/Weights` của lần rà soát trước.
 `CacFileSource.py` là CLI gọi các mô-đun trong năm folder `members/*/works_done`.
@@ -21,6 +49,8 @@ Mô hình, Dataset, loss và metric dùng chung với `project.py`; tám source 
 │   └── best.pt, history.csv, summary.json, resolved_config.json
 ├── results/                     # điểm tham chiếu và minh chứng chạy lại
 ├── scripts/
+├── notebooks/                   # code và output theo báo cáo
+├── requirements-notebook.txt
 └── README.md
 ```
 
@@ -497,9 +527,9 @@ Các câu thường cần trả lời:
 | Thiếu dữ liệu ở source ZIP | Chép Kvasir-SEG/images+masks; giữ nguyên manifest |
 | Tưởng48tests là Dice | Verification là kiểm tra kỹ thuật; điểm ở comparison.csv |
 
-## 15. Báo cáo và biểu đồ bổ sung (14/11/2026)
+## 15. Báo cáo và biểu đồ bổ sung (15/11/2026)
 
-[Tải báo cáo Word Nhóm 06](reports/BaoCao_DeepLearning_Nhom_06.docx) — 52 trang, 23 hình và 21 bảng. Bản này thêm hai hình kiến trúc có ghi nguồn từ bài U-Net/U-Net++; sơ đồ theo đúng code của nhóm vẫn nằm ở Chương 3. Ba biểu đồ mới thể hiện số tham số, chênh lệch Dice ghép cặp kèm khoảng bootstrap và kết quả từng head của C. Bốn bảng được chuyển nguyên số liệu xuống Phụ lục E.
+[Tải báo cáo Word Nhóm 06](reports/BaoCao_DeepLearning_Nhom_06.docx) — 54 trang, 23 hình và 21 bảng. Chương 1 giữ hai hình kiến trúc có ghi nguồn từ bài U-Net/U-Net++; Chương 3 dùng hai sơ đồ Duy cung cấp, chú thích theo đúng cấu hình nhóm. Ba biểu đồ bổ sung thể hiện số tham số, chênh lệch Dice ghép cặp kèm khoảng bootstrap và kết quả từng head của C. Bốn bảng được chuyển nguyên số liệu xuống Phụ lục E. Phụ lục F hướng dẫn notebook và ghi kết quả tái lập đã kiểm chứng.
 
 Tạo lại ba biểu đồ từ CSV hiện có, không huấn luyện lại:
 

@@ -1,0 +1,70 @@
+{
+  "status": "passed",
+  "models": {
+    "A": {
+      "epochs": 50,
+      "best_epoch": 50,
+      "dice": 0.6014174367678825,
+      "iou": 0.4872587524942664,
+      "precision": 0.6851848130126327,
+      "recall": 0.6267466317387427,
+      "model_weights_identical": true,
+      "max_history_metric_delta": 0.0,
+      "max_test_per_image_delta": 0.0,
+      "trainer_test_images_read": 0,
+      "training_notebook_code_sha256": "4ac67b91096aa565c70d575f285aebe42ba1d5925eca6d81da3ab9fce5b53bdc"
+    },
+    "B": {
+      "epochs": 50,
+      "best_epoch": 49,
+      "dice": 0.668239984232573,
+      "iou": 0.5420887913301868,
+      "precision": 0.7061638812510741,
+      "recall": 0.7369525955078635,
+      "model_weights_identical": true,
+      "max_history_metric_delta": 0.0,
+      "max_test_per_image_delta": 0.0,
+      "trainer_test_images_read": 0,
+      "training_notebook_code_sha256": "4ac67b91096aa565c70d575f285aebe42ba1d5925eca6d81da3ab9fce5b53bdc"
+    },
+    "C": {
+      "epochs": 50,
+      "best_epoch": 48,
+      "dice": 0.7390470717877173,
+      "iou": 0.6304042486085379,
+      "precision": 0.777874146785098,
+      "recall": 0.8006783708471886,
+      "model_weights_identical": true,
+      "max_history_metric_delta": 0.0,
+      "max_test_per_image_delta": 0.0,
+      "trainer_test_images_read": 0,
+      "training_notebook_code_sha256": "4ac67b91096aa565c70d575f285aebe42ba1d5925eca6d81da3ab9fce5b53bdc"
+    }
+  },
+  "max_metric_delta": 0.0,
+  "fresh_training_epochs": 150,
+  "same_seed": 42,
+  "notebooks": {
+    "DoAn_Nhom06_DayDu.ipynb": {
+      "code_cells": 82,
+      "all_cells_executed": true,
+      "errors": 0,
+      "code_sha256": "097373ecfccdc46e298cfd85d043bcc5ed9497c030905f6ece70c083c9f9e597"
+    },
+    "GiaoDien_Va_BieuDo.ipynb": {
+      "code_cells": 11,
+      "all_cells_executed": true,
+      "errors": 0,
+      "code_sha256": "c05be73c2c901f454e57427b54bbffe0a7d9eb0da1a51d546ba3901a76ef5233"
+    }
+  },
+  "verified_source_and_manifest_hashes": 9,
+  "result_directory": "results\\notebook_20261115_052209_244321",
+  "training_paths": {
+    "A": "runs\\notebook_20261115_043920_264009\\A",
+    "B": "runs\\notebook_20261115_043920_264009\\B",
+    "C": "runs\\notebook_20261115_043920_264009\\C"
+  },
+  "final_notebook_training_mode": "reuse_completed_run",
+  "scope": "Repeatability of the same seed/split/protocol; not independent new-seed, patient-level or external validation."
+}

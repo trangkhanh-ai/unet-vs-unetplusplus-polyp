@@ -1,0 +1,51 @@
+{
+  "bootstrap_samples": 10000,
+  "bootstrap_seed": 0,
+  "paired_dice": {
+    "B_vs_A": {
+      "delta": 0.06682254746469049,
+      "ci_low": 0.03300131136594708,
+      "ci_high": 0.10117118223534804,
+      "p_wilcoxon": 0.0004833465864840919,
+      "cohen_dz": 0.31930850226705654,
+      "images_up": 98,
+      "images_down": 51,
+      "images_equal": 1
+    },
+    "C_vs_A": {
+      "delta": 0.13762963501983477,
+      "ci_low": 0.1024243321271633,
+      "ci_high": 0.1722200025916567,
+      "p_wilcoxon": 9.989739405556718e-13,
+      "cohen_dz": 0.6362521166665688,
+      "images_up": 116,
+      "images_down": 34,
+      "images_equal": 0
+    },
+    "C_vs_B": {
+      "delta": 0.07080708755514431,
+      "ci_low": 0.04911987125739723,
+      "ci_high": 0.09455430424370072,
+      "p_wilcoxon": 4.1357688373502507e-10,
+      "cohen_dz": 0.5053779930088274,
+      "images_up": 105,
+      "images_down": 45,
+      "images_equal": 0
+    }
+  },
+  "dice_confidence_intervals": {
+    "A": [
+      0.5540346956775646,
+      0.6480208092592816
+    ],
+    "B": [
+      0.6313648648927549,
+      0.7040670995146647
+    ],
+    "C": [
+      0.7023105464985703,
+      0.7746369335157626
+    ]
+  },
+  "scope": "Conditional image-level analysis of these fixed checkpoints; not multi-seed uncertainty. Patient/video independence is unverified."
+}

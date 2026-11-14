@@ -17,6 +17,9 @@ members/duy/works_done/artifacts/**/*.pth
 *.zip
 *.npy
 *.part
+/notebooks/.runtime/
+/notebooks/.ipynb_checkpoints/
+/notebooks/*.html
 /runs/*
 !/runs/A_unet_seed42/
 !/runs/B_unetplusplus_seed42/

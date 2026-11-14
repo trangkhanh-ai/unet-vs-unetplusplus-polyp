@@ -1,0 +1,9 @@
+{
+  "status": "passed",
+  "streamlit_apptest": "passed",
+  "http_health": "200 OK",
+  "server_stopped": true,
+  "reference_charts": 3,
+  "output": "results\\notebook_tools_20261115_050249_253000",
+  "app_source_matches_module": true
+}

@@ -23,10 +23,12 @@ def digest(path):
 def selected_files(include_last=False):
     paths = set()
     for name in ("CacFileSource.py", "project.py", "README.md", ".gitattributes",
-                 "requirements.txt", "requirements-duy.txt", "requirements-viz.txt", "requirements-report.txt"):
+                 "requirements.txt", "requirements-duy.txt", "requirements-viz.txt", "requirements-report.txt", "requirements-notebook.txt"):
         p = ROOT / name
         if p.is_file():
             paths.add(p)
+    # Only published notebooks, never the temporary Jupyter kernel/app files.
+    paths.update(p for p in (ROOT / "notebooks").glob("*.ipynb") if p.is_file())
     for folder in ("scripts", "configs", "Kvasir-SEG"):
         for p in (ROOT / folder).rglob("*"):
             if p.is_file() and p.suffix.lower() in {".py", ".ps1", ".json", ".csv", ".png", ".jpg", ".jpeg"}:

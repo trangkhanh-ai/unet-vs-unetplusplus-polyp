@@ -1,0 +1,228 @@
+{
+  "format_version": 1,
+  "created_at": "2026-11-14T22:22:24.900081+00:00",
+  "status": "evaluated",
+  "split": "test",
+  "evaluation_kind": "locked_test",
+  "model_name": "unet",
+  "model_kwargs": {
+    "in_channels": 3,
+    "out_channels": 1,
+    "base_channels": 32,
+    "batch_norm": false,
+    "deep_supervision": false
+  },
+  "config": {
+    "model": "unet",
+    "model_kwargs": {
+      "in_channels": 3,
+      "out_channels": 1,
+      "base_channels": 32,
+      "batch_norm": false,
+      "deep_supervision": false
+    },
+    "manifest": "members/khanh/works_done/dataset_splits.csv",
+    "image_size": [
+      256,
+      256
+    ],
+    "seed": 42,
+    "batch_size": 8,
+    "num_workers": 0,
+    "learning_rate": 0.001,
+    "max_epochs": 50,
+    "early_stopping_patience": 10,
+    "device": "cuda",
+    "amp": true,
+    "amp_dtype": "bfloat16",
+    "torch_threads": 4,
+    "augmentation": true,
+    "scheduler": "none",
+    "loss": {
+      "bce_weight": 0.5,
+      "soft_dice_weight": 0.5,
+      "smooth": 1e-06
+    },
+    "evaluation": {
+      "threshold": 0.5,
+      "head_policy": "last",
+      "aggregation": "per_image_then_mean"
+    }
+  },
+  "checkpoint": "D:\\DoAn\\Đồ án DeepLearning\\unet-vs-unetplusplus-polyp\\runs\\notebook_20261115_043920_264009\\A\\best.pt",
+  "checkpoint_sha256": "211deabaf57029aa05c174489eab643c76da633cbb599a35ca7b7b9afe3a9e2b",
+  "selected_epoch": 50,
+  "best_validation": {
+    "epoch": 50,
+    "val_dice": 0.6337386469228167,
+    "val_iou": 0.5202974885099534,
+    "val_loss": 0.3533203904827436
+  },
+  "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+  "split_counts": {
+    "train": 700,
+    "test": 150,
+    "val": 150
+  },
+  "preprocessing": {
+    "image_size": [
+      256,
+      256
+    ],
+    "normalization": "rgb_float_0_1",
+    "mask": "binary_0_1"
+  },
+  "threshold": 0.5,
+  "head_policy": "last",
+  "aggregation": "per_image_then_mean",
+  "image_count": 150,
+  "metrics": {
+    "dice": 0.6014174367678824,
+    "iou": 0.4872587524942664,
+    "precision": 0.6851848130126327,
+    "recall": 0.6267466317387427
+  },
+  "by_polyp_category": {
+    "large": {
+      "count": 40,
+      "dice": 0.6275125949259657,
+      "iou": 0.48935746493364085,
+      "precision": 0.9302220936945801,
+      "recall": 0.5145134315962109
+    },
+    "medium": {
+      "count": 80,
+      "dice": 0.67000540483062,
+      "iou": 0.5623438308498457,
+      "precision": 0.6858590540258457,
+      "recall": 0.713835521504232
+    },
+    "small": {
+      "count": 30,
+      "dice": 0.3837226443898049,
+      "iou": 0.2842335936268893,
+      "precision": 0.35667046273480196,
+      "recall": 0.5441538592208134
+    }
+  },
+  "parameters": 7760097,
+  "protocol_authorization": {
+    "label": "A",
+    "lock_sha256": "b957100bc659a8d8dc1ec68748df22f85dbefc7a2aa3aff3f62e693b108fcfd9",
+    "created_at": "2026-11-15T05:22:20.282288+07:00"
+  },
+  "timing": {
+    "scope": "model forward only; excludes loading, transfer, sigmoid, metrics, export; float32 without AMP",
+    "warmup_batches": 2,
+    "batch_size": 8,
+    "num_workers": 0,
+    "forward_seconds": 0.9120834001805633,
+    "images_per_second": 164.45864486767854,
+    "milliseconds_per_image": 6.080556001203756,
+    "data_loading_seconds": 0.6687970999628305,
+    "transfer_seconds": 0.01619649975327775,
+    "batches": [
+      {
+        "images": 8,
+        "seconds": 0.04421720001846552
+      },
+      {
+        "images": 8,
+        "seconds": 0.051916400028858334
+      },
+      {
+        "images": 8,
+        "seconds": 0.05145879997871816
+      },
+      {
+        "images": 8,
+        "seconds": 0.044647199974860996
+      },
+      {
+        "images": 8,
+        "seconds": 0.04523670003982261
+      },
+      {
+        "images": 8,
+        "seconds": 0.04709969996474683
+      },
+      {
+        "images": 8,
+        "seconds": 0.05079400003887713
+      },
+      {
+        "images": 8,
+        "seconds": 0.04803040000842884
+      },
+      {
+        "images": 8,
+        "seconds": 0.048320200003217906
+      },
+      {
+        "images": 8,
+        "seconds": 0.04778630001237616
+      },
+      {
+        "images": 8,
+        "seconds": 0.045570400019641966
+      },
+      {
+        "images": 8,
+        "seconds": 0.049664099991787225
+      },
+      {
+        "images": 8,
+        "seconds": 0.053805100033059716
+      },
+      {
+        "images": 8,
+        "seconds": 0.04915930004790425
+      },
+      {
+        "images": 8,
+        "seconds": 0.04946680000284687
+      },
+      {
+        "images": 8,
+        "seconds": 0.04976670001633465
+      },
+      {
+        "images": 8,
+        "seconds": 0.04539919999660924
+      },
+      {
+        "images": 8,
+        "seconds": 0.0490157000022009
+      },
+      {
+        "images": 6,
+        "seconds": 0.04072920000180602
+      }
+    ]
+  },
+  "environment": {
+    "device": "cuda",
+    "device_name": "NVIDIA GeForce RTX 5060 Laptop GPU",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "torch": "2.11.0+cu128",
+    "python": "3.12.14",
+    "torch_threads": 4,
+    "precision": "float32",
+    "amp": false,
+    "cuda_build": "12.8",
+    "tf32_matmul": false,
+    "tf32_cudnn": false
+  },
+  "qualitative_selection": "first six sorted image IDs",
+  "evaluation_source_hashes": {
+    "evaluate.py": "1b632c3e5a29b17217890b54d1f2ea11fb40a026af208242301a2cab26e02d10",
+    "checkpoint_io.py": "54f5d375acf6c7040e0b41db8f50abbef36cc5f52a8030a0dc52faecaf1d96dc",
+    "metrics.py": "6c1956cdeae0a8c373dceb7359a1e883b2e730ce3845cccc666cb9c838d8696f"
+  },
+  "resolution_note": "All metrics and exported masks use model input resolution, not original image resolution",
+  "files": {
+    "per_image": "per_image.csv",
+    "masks": "masks/",
+    "qualitative": "qualitative.png"
+  }
+}

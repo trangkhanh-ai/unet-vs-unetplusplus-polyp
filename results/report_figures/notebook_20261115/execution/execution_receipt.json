@@ -1,0 +1,94 @@
+{
+  "status": "completed",
+  "execution": "native notebook cells",
+  "train_from_scratch": true,
+  "training_mode": "reuse_completed_run",
+  "reuse_completed_run": "notebook_20261115_043920_264009",
+  "notebook_code_sha256": "097373ecfccdc46e298cfd85d043bcc5ed9497c030905f6ece70c083c9f9e597",
+  "device": "cuda",
+  "split_counts": {
+    "train": 700,
+    "test": 150,
+    "val": 150
+  },
+  "epochs": {
+    "A": 50,
+    "B": 50,
+    "C": 50
+  },
+  "training_test_images_read": {
+    "A": 0,
+    "B": 0,
+    "C": 0
+  },
+  "test_image_count": 150,
+  "comparison": [
+    {
+      "experiment": "A",
+      "model": "unet",
+      "deep_supervision": false,
+      "seed": 42,
+      "selected_epoch": 50,
+      "dice": 0.6014174367678824,
+      "iou": 0.4872587524942664,
+      "precision": 0.6851848130126327,
+      "recall": 0.6267466317387427,
+      "parameters": 7760097,
+      "forward_ms_per_image": 6.080556001203756,
+      "forward_images_per_second": 164.45864486767854
+    },
+    {
+      "experiment": "B",
+      "model": "unetplusplus",
+      "deep_supervision": false,
+      "seed": 42,
+      "selected_epoch": 49,
+      "dice": 0.668239984232573,
+      "iou": 0.542088791330187,
+      "precision": 0.7061638812510741,
+      "recall": 0.7369525955078634,
+      "parameters": 9042177,
+      "forward_ms_per_image": 15.724918666528538,
+      "forward_images_per_second": 63.59333368944934
+    },
+    {
+      "experiment": "C",
+      "model": "unetplusplus",
+      "deep_supervision": true,
+      "seed": 42,
+      "selected_epoch": 48,
+      "dice": 0.7390470717877173,
+      "iou": 0.6304042486085379,
+      "precision": 0.777874146785098,
+      "recall": 0.8006783708471886,
+      "parameters": 9042276,
+      "forward_ms_per_image": 15.884876000151658,
+      "forward_images_per_second": 62.95296230140245
+    }
+  ],
+  "report_reference_unchanged": true,
+  "output": "results\\notebook_20261115_052209_244321",
+  "run_paths": {
+    "A": "runs\\notebook_20261115_043920_264009\\A",
+    "B": "runs\\notebook_20261115_043920_264009\\B",
+    "C": "runs\\notebook_20261115_043920_264009\\C"
+  },
+  "training_execution": {
+    "A": {
+      "kind": "notebook definitions",
+      "notebook_code_sha256": "4ac67b91096aa565c70d575f285aebe42ba1d5925eca6d81da3ab9fce5b53bdc",
+      "factory_adapter": "direct local classes; parity checked against module factory"
+    },
+    "B": {
+      "kind": "notebook definitions",
+      "notebook_code_sha256": "4ac67b91096aa565c70d575f285aebe42ba1d5925eca6d81da3ab9fce5b53bdc",
+      "factory_adapter": "direct local classes; parity checked against module factory"
+    },
+    "C": {
+      "kind": "notebook definitions",
+      "notebook_code_sha256": "4ac67b91096aa565c70d575f285aebe42ba1d5925eca6d81da3ab9fce5b53bdc",
+      "factory_adapter": "direct local classes; parity checked against module factory"
+    }
+  },
+  "completed_at": "2026-11-15T05:22:49.125659+07:00"
+}

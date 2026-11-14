@@ -1,0 +1,45 @@
+{
+  "status": "passed",
+  "scope": "data quality audit; no model evaluation or tuning",
+  "manifest": "members\\khanh\\works_done\\dataset_splits.csv",
+  "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+  "pairs": 1000,
+  "split_counts": {
+    "train": 700,
+    "test": 150,
+    "val": 150
+  },
+  "area_group_counts": {
+    "large": {
+      "test": 40,
+      "train": 186,
+      "val": 40
+    },
+    "medium": {
+      "test": 80,
+      "train": 374,
+      "val": 80
+    },
+    "small": {
+      "test": 30,
+      "train": 140,
+      "val": 30
+    }
+  },
+  "width_range": [
+    332,
+    1920
+  ],
+  "height_range": [
+    352,
+    1072
+  ],
+  "empty_masks": 0,
+  "exact_duplicate_groups": [],
+  "issues": [],
+  "limitations": [
+    "Near-duplicate similarity and patient/video independence are not verified",
+    "Mask area groups are image-area ratios, not clinical polyp size",
+    "Masks are JPEG; binary label is grayscale >127"
+  ]
+}
