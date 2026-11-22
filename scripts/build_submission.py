@@ -10,6 +10,11 @@ import zipfile
 
 ROOT = Path(__file__).resolve().parents[1]
 RUNS = ("A_unet_seed42", "B_unetplusplus_seed42", "C_unetplusplus_ds_seed42")
+NOTEBOOK_ARTIFACTS = {
+    "members/duy/works_done/artifacts/model_check.json",
+    "members/duy/works_done/artifacts/overfit_diagnostic/diagnostic_curve.png",
+    "members/duy/works_done/artifacts/overfit_diagnostic/train_memorization.png",
+}
 
 
 def digest(path):
@@ -35,10 +40,10 @@ def selected_files(include_last=False):
                 paths.add(p)
     for owner in ("duy", "khanh", "phuc", "huy", "tri"):
         for p in (ROOT / "members" / owner / "works_done").rglob("*"):
-            if p.is_file() and p.suffix.lower() in {".py", ".json", ".csv", ".txt", ".png", ".svg"}:
-                # Artifacts có thể gồm dữ liệu chẩn đoán cục bộ; chỉ lấy hình kiến trúc.
+            if p.is_file() and p.suffix.lower() in {".py", ".ipynb", ".json", ".csv", ".txt", ".png", ".svg"}:
+                # Giữ hình và số liệu mà notebook thành viên đọc khi chạy.
                 relative = p.relative_to(ROOT).as_posix()
-                if "/artifacts/" in relative and "/architecture/" not in relative:
+                if "/artifacts/" in relative and "/architecture/" not in relative and relative not in NOTEBOOK_ARTIFACTS:
                     continue
                 paths.add(p)
     for name in RUNS:
@@ -53,7 +58,7 @@ def selected_files(include_last=False):
         for p in (ROOT / "results" / folder).rglob("*"):
             if p.is_file() and p.suffix.lower() in {".json", ".csv", ".png", ".svg", ".gv", ".txt"}:
                 paths.add(p)
-    return sorted(p for p in paths if "__pycache__" not in p.parts)
+    return sorted(p for p in paths if not {"__pycache__", ".ipynb_checkpoints"}.intersection(p.parts))
 
 
 def build(output, include_last=False):

@@ -1,560 +1,78 @@
-# Phân đoạn polyp: U-Net và U-Net++
+# Phân đoạn polyp với U-Net và U-Net++
 
-Đồ án môn Deep Learning, đề tài 06: nghiên cứu kiến trúc U-Net++, **nested dense skip connections**, phân đoạn polyp trên **Kvasir-SEG** và so sánh với U-Net thông thường.
+Đồ án Deep Learning · Nhóm 06
 
-Bản tích hợp do **Nguyễn Bảo Duy — dzyuu1612** bàn giao, có AI hỗ trợ triển khai. Các folder giữ phân công của nhóm; từng thành viên cần tự đọc, chạy và xác nhận phần mình.
+So sánh U-Net, U-Net++ và U-Net++ có giám sát sâu trên Kvasir-SEG. Mỗi mô hình nhận ảnh nội soi RGB và dự đoán mặt nạ polyp theo từng pixel.
 
-## Chạy và học bằng notebook cập nhật 15/11/2026
+![Ảnh nội soi, mặt nạ thật và dự đoán của ba mô hình trên ba ảnh test](results/report_figures/notebook_20261115/execution/first_three_test_ids.png)
 
-| Notebook | Nội dung |
-|---|---|
-| [Đồ án đầy đủ](notebooks/DoAn_Nhom06_DayDu.ipynb) | Code cốt lõi thực thi trực tiếp trong 82 cell: Dataset, U-Net, U-Net++, bảng shape từng tầng, loss, trainer, checkpoint, khóa trước test, evaluator, biểu đồ theo báo cáo, thống kê, head và dự đoán |
-| [Giao diện và biểu đồ](notebooks/GiaoDien_Va_BieuDo.ipynb) | Toàn bộ source Streamlit và ba biểu đồ bổ sung; 11 cell chạy kiểm tra app, server và xuất hình |
+## Kết quả trên 150 ảnh test
 
-1. Cài môi trường Python 3.12/PyTorch theo mục 2, đặt đủ dữ liệu Kvasir-SEG.
-2. Cài thêm `./.venv/Scripts/python.exe -X utf8 -m pip install -r requirements-notebook.txt`.
-3. Mở notebook trong VS Code/Jupyter, chọn kernel Python của `.venv` (máy Duy có thể chọn `.venv-polyp`), chọn **Restart Kernel → Run All**.
-4. `TRAIN_FROM_SCRATCH=True` chạy protocol 50 epoch tối đa cho cả ba model. Đặt `REUSE_COMPLETED_RUN=None` để chạy mới; tên một thư mục đã hoàn thành trong `runs/` cho phép đọc lại lượt đó. Output ghi rõ đang train hay đang đọc lại.
-5. `TRAIN_FROM_SCRATCH=False` đánh giá lại checkpoint báo cáo, không huấn luyện mới. Chạy `scripts/prepare_project.py` nếu thiếu checkpoint tham chiếu.
+| Mô hình | Dice | IoU | Precision | Recall |
+| --- | ---: | ---: | ---: | ---: |
+| A · U-Net | 0,6014 | 0,4873 | 0,6852 | 0,6267 |
+| B · U-Net++ | 0,6682 | 0,5421 | 0,7062 | 0,7370 |
+| C · U-Net++ có giám sát sâu | **0,7390** | **0,6304** | **0,7779** | **0,8007** |
 
-Bản notebook đã thực thi lưu cả output. Số trong báo cáo và số của lượt notebook được đối chiếu riêng qua `doi_chieu_bao_cao.csv`; không tự thay kết quả báo cáo. Run mới, khóa và kết quả nằm trong `runs/notebook_<thời gian>/` và `results/notebook_<thời gian>/`. Các checkpoint của lượt mới được giữ tại máy Duy; máy khác có thể chọn `TRAIN_FROM_SCRATCH=False` và tải checkpoint tham chiếu để chạy nhanh. Nếu chọn True và không có thư mục đọc lại, notebook sẽ huấn luyện lượt mới. Notebook giao diện mở rồi dừng server khi Run All kết thúc; muốn xem lâu hơn, dừng trước cell tắt server hoặc dùng CLI demo.
+Cả ba dùng chung split **700 train / 150 validation / 150 test**, ảnh **256×256** và seed **42**. Checkpoint được chọn theo Dice validation. B và C dùng head cuối khi đánh giá. Điểm là trung bình theo ảnh. C dẫn đầu trên toàn tập test ở lượt này. Cần nhiều seed và dữ liệu ngoài để đánh giá mức độ khái quát.
 
-**Kiểm chứng ngày 15/11/2026:** đã huấn luyện mới đủ 50 epoch cho A/B/C (150 epoch), trọng số và toàn bộ lịch sử metric khớp bản gốc. Sau khi đặt trạng thái đánh giá trong kernel giống evaluator CLI, cả bốn metric từng ảnh trên 150 ảnh test của mỗi mô hình đều khớp hoàn toàn. Bản cuối chạy đủ **82 + 11 cell**, không có lỗi. [Minh chứng thực thi](results/report_figures/notebook_20261115/execution_summary.json) ghi hash code notebook, số epoch và đối chiếu. Bản notebook lưu sẵn tham số đọc lại lượt đã chạy để Run All trên máy Duy không tốn thêm thời gian train; đặt `REUSE_COMPLETED_RUN=None` nếu muốn huấn luyện lại. Đây là tái lập seed 42, không phải bằng chứng trên seed độc lập mới.
+[Bảng kết quả gốc](results/comparison/comparison.csv) · [Minh chứng tái lập](results/report_figures/notebook_20261115/execution_summary.json) · [Báo cáo Word trong repo](reports/BaoCao_DeepLearning_Nhom_06.docx)
 
-Hai hình kiến trúc Duy gửi đã được thay vào Hình 3.4 và 3.5 trong báo cáo; hình có chú thích cấu hình nhóm và nguồn tham khảo. Notebook là bản chính để đọc luồng đồ án. Các module `.py` được giữ để tương thích checkpoint đã khóa, CLI và Streamlit; code mô hình, Dataset, loss và trainer đều hiển thị đầy đủ trong notebook, không chỉ là cell gọi `%run`.
+## Chạy notebook
 
-Chạy toàn bộ cell từ terminal và lưu output:
+Repo chứa sẵn 1.000 cặp ảnh và mask. Trọng số được tải từ GitHub Release và kiểm tra SHA-256.
 
-```powershell
-./.venv/Scripts/python.exe -X utf8 -B scripts/execute_notebook.py
-./.venv/Scripts/python.exe -X utf8 -B scripts/execute_notebook.py --notebook notebooks/GiaoDien_Va_BieuDo.ipynb
-```
-
-Notebook chính dùng kernel riêng và lưu tiến độ từng cell ở `notebooks/.runtime/`. Đây là thư mục tạm, không đưa lên GitHub. GPU 8 GB của máy Duy chạy được batch 8; train CPU có thể rất lâu, nên dùng chế độ checkpoint khi chỉ muốn học và tái lập báo cáo.
-
-## Bộ nộp Nhóm 06
-
-Bộ nộp dùng đúng cấu trúc repo, không dùng bản độc lập `Data/Weights` của lần rà soát trước.
-`CacFileSource.py` là CLI gọi các mô-đun trong năm folder `members/*/works_done`.
-Mô hình, Dataset, loss và metric dùng chung với `project.py`; tám source đã gắn SHA với checkpoint được giữ nguyên.
-
-```text
-1.ChuongTrinh/
-├── CacFileSource.py              # CLI dùng cho bộ nộp
-├── project.py                   # CLI gốc của repo
-├── members/{duy,khanh,phuc,huy,tri}/works_done/
-├── Kvasir-SEG/{images,masks}/
-├── configs/                     # cấu hình và khóa SHA256
-├── runs/{A_unet_seed42,B_unetplusplus_seed42,C_unetplusplus_ds_seed42}/
-│   └── best.pt, history.csv, summary.json, resolved_config.json
-├── results/                     # điểm tham chiếu và minh chứng chạy lại
-├── scripts/
-├── notebooks/                   # code và output theo báo cáo
-├── requirements-notebook.txt
-└── README.md
-```
-
-Nhận ZIP: giải nén, mở terminal tại `1.ChuongTrinh`. Clone GitHub: mở terminal tại repo root.
-Cài môi trường theo mục 2, sau đó:
-
-```powershell
-$PolypPython = './.venv/Scripts/python.exe'
-# Máy Duy có thể dùng '../.venv-polyp/Scripts/python.exe'
-& $PolypPython -X utf8 -B CacFileSource.py prepare
-& $PolypPython -X utf8 -B CacFileSource.py check
-& $PolypPython -X utf8 -B CacFileSource.py compare --device cuda
-& $PolypPython -X utf8 -B CacFileSource.py demo --port 8501
-```
-
-`check`: 48 kiểm tra gốc + 10 kiểm tra bổ sung. `compare`: đánh giá 150 ảnh mỗi model, xuất 450 mask,
-bảng/hình cùng bootstrap/Wilcoxon trong output mới; `--device cpu` dùng khi không có CUDA.
-CI và kiểm định ở đây có điều kiện trên những checkpoint cố định; chưa chứng minh độc lập patient/video hay biến thiên nhiều seed.
-`CacFileSource.py splits` chỉ audit manifest hiện có, **không tự chia lại** dữ liệu đã khóa.
-
-### Huấn luyện và resume
-
-```powershell
-# Giao thức tham chiếu, tạo run mới
-& $PolypPython CacFileSource.py train --model C --name C_new --device cuda
-# Mở rộng riêng, chưa có kết quả 150 epoch trong bảng báo cáo
-& $PolypPython CacFileSource.py train --model C --protocol extension --name C_v2 --epochs 150 --patience 20 --scheduler cosine --warmup 5 --batch_norm --init he --device cuda
-# Resume bằng cách thêm --resume vào đúng lệnh đã chạy
-```
-
-Thiếu `last.pt` sẽ báo lỗi. Resume không cho thay LR/seed/loss/manifest/source; cosine phải giữ nguyên
-ngân sách epoch. Các run mở rộng hoàn tất như `C_v2` xuất hiện trong demo; không cần hậu tố `_retrain`.
-Không ghi đè ba run tham chiếu và không có `--force`. Khi muốn tiếp tục run tham chiếu cũ, tải thêm
-`last.pt` qua `prepare --include-last`, rồi dùng CLI gốc trong mục 12.
-
-### Phân tích head và đóng gói
-
-```powershell
-& $PolypPython CacFileSource.py evaluate --weights runs/C_unetplusplus_ds_seed42/best.pt --split val --head all --device cuda
-& $PolypPython CacFileSource.py layers --model B
-& $PolypPython scripts/build_submission.py --output reports/1.ChuongTrinh.zip
-```
-
-Test cần khóa đúng checkpoint; run mới phải tạo khóa mới bằng `project.py lock` trước đánh giá.
-Phân tích head bổ sung không thay chính sách head cuối của bảng kết quả chính.
-ZIP giữ nguyên byte checkpoint gốc để SHA khớp `protocol_lock.json` (lớn hơn bộ trọng số rút gọn).
-Có `submission_manifest.json` với SHA256 từng file; không chứa venv, Git, cache hoặc run pilot.
-Báo cáo Word Nhóm 06 được bàn giao cùng ZIP, giữ khung ba chương, cập nhật mục lục tự động.
-Tỷ lệ đóng góp cần các thành viên xác nhận; không tự suy từ số file hoặc số commit.
-
-## Mục lục
-
-1. [Kết quả thật và hình ảnh](#1-kết-quả-thật-và-hình-ảnh)
-2. [Chạy nhanh trên máy mới](#2-chạy-nhanh-trên-máy-mới)
-3. [Năm người và cách ghép code](#3-năm-người-và-cách-ghép-code)
-4. [Hiểu bài toán và tensor](#4-hiểu-bài-toán-và-tensor)
-5. [U-Net: từng tầng đi đâu](#5-u-net-từng-tầng-đi-đâu)
-6. [U-Net++: nested dense skip](#6-u-net-nested-dense-skip)
-7. [Deep supervision, loss và gradient](#7-deep-supervision-loss-và-gradient)
-8. [Protocol so sánh](#8-protocol-so-sánh)
-9. [Chạy lại toàn bộ kết quả bằng checkpoint](#9-chạy-lại-toàn-bộ-kết-quả-bằng-checkpoint)
-10. [Huấn luyện lại từ đầu](#10-huấn-luyện-lại-từ-đầu)
-11. [Tự vẽ các hình chi tiết](#11-tự-vẽ-các-hình-chi-tiết)
-12. [Checkpoint, resume và tái lập](#12-checkpoint-resume-và-tái-lập)
-13. [Học và bảo vệ đồ án](#13-học-và-bảo-vệ-đồ-án)
-14. [Lỗi thường gặp](#14-lỗi-thường-gặp)
-15. [Tài liệu và repo tham khảo](#15-tài-liệu-và-repo-tham-khảo)
-
-## 1. Kết quả thật và hình ảnh
-
-Cả A/B/C đã chạy **50 epoch**, chọn best bằng validation, khóa checkpoint trước khi đánh giá trên **cùng 150 ảnh test**.
-
-| Mô hình | Dice | IoU | Precision | Recall | Best epoch | Tham số |
-|---|---:|---:|---:|---:|---:|---:|
-| A — U-Net | 0.6014 | 0.4873 | 0.6852 | 0.6267 | 50 | 7,760,097 |
-| B — U-Net++ | 0.6682 | 0.5421 | 0.7062 | 0.7370 | 49 | 9,042,177 |
-| C — U-Net++ có deep supervision | 0.7390 | 0.6304 | 0.7779 | 0.8007 | 48 | 9,042,276 |
-
-Nguồn số chưa làm tròn: [comparison.csv](results/comparison/comparison.csv), [comparison.json](results/comparison/comparison.json). Có [CSV từng ảnh](results/comparison/paired_per_image.csv), [phân nhóm diện tích](results/comparison/comparison_by_size.csv) và toàn bộ mask trong `results/A_test`, `B_test`, `C_test`.
-
-**C cao nhất trong một seed 42 và một split này.** Một seed chưa chứng minh ưu thế ổn định. A/B khác số tham số nên khác biệt không cô lập hoàn toàn tác động của skip connection.
-
-![Dice và IoU trên 150 ảnh test](results/report_figures/metric_comparison.png)
-
-![Đường học của ba mô hình](results/report_figures/training_curves.png)
-
-Train loss C là mean bốn head; val loss C dùng head cuối. Train có augmentation, validation không có. Không diễn giải khoảng cách hai đường chỉ bằng overfitting.
-
-![Ảnh, mask thật và prediction A/B/C](results/report_figures/paired_examples.png)
-
-Ba test ID đầu theo thứ tự sắp xếp, có Dice từng ảnh. Hình giữ cả ca thất bại; C không thắng trên mọi ảnh. `results/comparison` còn có ví dụ chọn theo delta/điểm thấp để phân tích lỗi.
-
-Audit xác nhận **1.000 cặp ảnh/mask** và **48/48 kiểm tra kỹ thuật đạt**. Qua kiểm tra code không đồng nghĩa model phân đoạn tốt; điểm model nằm ở bảng test phía trên.
-
-## 2. Chạy nhanh trên máy mới
-
-### 2.1. Clone đúng bản code
-
-Cần Git và **Python 3.12**. Nhánh `main` có CLI `CacFileSource.py`, trainer mở rộng và phân tích thống kê/head. Clone hoặc pull bản mới trước khi chạy các lệnh bên dưới.
+Trên Windows, mở PowerShell và dùng Python 3.12. Thay `--device cpu` bằng `--device cuda` nếu máy dùng GPU NVIDIA tương thích CUDA 12.8.
 
 ```powershell
 git clone https://github.com/trangkhanh-ai/unet-vs-unetplusplus-polyp.git
-Set-Location -LiteralPath 'unet-vs-unetplusplus-polyp'
-```
-
-Dữ liệu Kvasir-SEG đã có trong lịch sử repo: `Kvasir-SEG/images` và `Kvasir-SEG/masks`. Manifest là `members/khanh/works_done/dataset_splits.csv`. Nếu chỉ nhận source ZIP, cần chép/tải dữ liệu theo [nguồn chính thức](https://datasets.simula.no/kvasir-seg/), giữ nguyên ID và vị trí. **Không tự chia lại CSV khi dùng checkpoint đã có.**
-
-### 2.2. Cài môi trường — Windows có NVIDIA
-
-```powershell
-py -3.12 scripts/setup_environment.py --device cuda --visualizations
-$PolypPython = './.venv/Scripts/python.exe'
-& $PolypPython -X utf8 -B project.py --help
-```
-
-Script tạo `.venv`, cài Torch **2.11.0+cu128**, requirements và công cụ vẽ. CUDA wheel có runtime cần thiết; vẫn cần driver NVIDIA phù hợp. Với RTX 5060 Laptop của Duy, môi trường này đã chạy thật.
-
-### 2.3. Máy CPU
-
-```powershell
+cd unet-vs-unetplusplus-polyp
 py -3.12 scripts/setup_environment.py --device cpu
-$PolypPython = './.venv/Scripts/python.exe'
+$Python = './.venv/Scripts/python.exe'
+& $Python -X utf8 -m pip install -r requirements-notebook.txt
+& $Python -X utf8 scripts/prepare_project.py
 ```
 
-CPU chạy inference/test được nhưng chậm hơn; không cần huấn luyện lại để xem kết quả.
+Trên Linux/macOS, dùng `python3.12` cho bước tạo môi trường và `./.venv/bin/python` cho các lệnh Python tiếp theo.
 
-Linux/macOS dùng `python3.12` thay `py -3.12`; Python môi trường nằm ở `./.venv/bin/python`.
+1. Mở repo trong VS Code với extension Jupyter. Chọn Python trong `.venv` làm kernel.
+2. Mở [notebook đồ án](notebooks/DoAn_Nhom06_DayDu.ipynb). Ở cell đầu, đặt `TRAIN_FROM_SCRATCH = False` để đánh giá checkpoint báo cáo. Chọn **Restart Kernel → Run All**.
+3. Để huấn luyện mới, đặt `TRAIN_FROM_SCRATCH = True` và `REUSE_COMPLETED_RUN = None`. Nếu đã có lượt notebook hoàn tất cùng cấu hình, điền tên thư mục của lượt đó vào `REUSE_COMPLETED_RUN` để đọc lại. Kết quả từng lượt nằm ở `results/notebook_<thời gian>/`.
+4. Mở [notebook giao diện và biểu đồ](notebooks/GiaoDien_Va_BieuDo.ipynb) để chạy kiểm tra Streamlit và tạo lại biểu đồ báo cáo. Notebook tự dừng server sau khi kiểm tra.
 
-macOS dùng `--device cpu`; script cài `torch==2.11.0` từ PyPI vì wheel macOS không dùng hậu tố `+cpu` của Windows/Linux. Pipeline này không chọn MPS hoặc CUDA trên Mac.
-
-### 2.4. Tải mô hình đã train và mở demo
+Để mở ứng dụng và thử ảnh nội soi trong trình duyệt, chạy lệnh sau rồi mở [demo cục bộ](http://127.0.0.1:8501).
 
 ```powershell
-& $PolypPython -X utf8 -B scripts/prepare_project.py
-& './scripts/chay_demo.ps1'
+& $Python -X utf8 CacFileSource.py demo --port 8501
 ```
 
-Mở **http://127.0.0.1:8501**, chọn A/B/C, tải ảnh rồi bấm **Phân đoạn ảnh**. Có mask và overlay để tải PNG.
+## Notebook theo thành viên
 
-Ba `best.pt` được tải từ [GitHub Release duy-polyp-v1](https://github.com/trangkhanh-ai/unet-vs-unetplusplus-polyp/releases/tag/duy-polyp-v1). Mỗi tệp được kiểm tra kích thước và SHA256 theo [pretrained_release.json](configs/pretrained_release.json). File lớn nằm ở Release, không nằm trong Git source.
+| Thành viên | Phần phụ trách | Notebook |
+| --- | --- | --- |
+| Nguyễn Bảo Duy | U-Net, khóa checkpoint và tích hợp | [U-Net và tích hợp](members/duy/works_done/Duy_UNet_Va_Tich_Hop.ipynb) |
+| Trang Mai Quốc Khánh | Manifest, tiền xử lý và augmentation | [Dữ liệu và augmentation](members/khanh/works_done/Khanh_Du_Lieu_Va_Augmentation.ipynb) |
+| Nguyễn Hoàng Phúc | Nested dense skip và deep supervision | [U-Net++ và giám sát sâu](members/phuc/works_done/Phuc_UNetPlusPlus_Va_Deep_Supervision.ipynb) |
+| Lê Trần Nhật Huy | Loss, lịch sử train và checkpoint | [Loss và huấn luyện](members/huy/works_done/Huy_Loss_Va_Huan_Luyen.ipynb) |
+| Nguyễn Đức Trí | Metric, phân tích lỗi và dự đoán | [Đánh giá và dự đoán](members/tri/works_done/Tri_Danh_Gia_Va_Du_Doan.ipynb) |
 
-Muốn lấy thêm `last.pt` để resume:
+Notebook đồ án chứa các class và hàm cốt lõi để đọc từ dữ liệu đến dự đoán. Năm notebook theo thành viên minh họa từng phần, gọi module tương ứng và đọc minh chứng đã lưu. Hai sơ đồ có nhãn theo đúng cấu hình nhóm nằm ở [U-Net](results/report_figures/notebook_20261115/unet_chu_thich.png) và [U-Net++](results/report_figures/notebook_20261115/unetplusplus_chu_thich.png).
+
+## Kiểm tra và đóng gói
 
 ```powershell
-& $PolypPython -X utf8 -B scripts/prepare_project.py --include-last
+& $Python -X utf8 CacFileSource.py check
+& $Python -X utf8 CacFileSource.py compare --device auto
+& $Python -X utf8 scripts/build_submission.py --output reports/1.ChuongTrinh.zip
 ```
 
-Nếu cổng đã dùng: `& './scripts/chay_demo.ps1' -Port 8502`. Linux/macOS chạy trực tiếp:
-
-```bash
-./.venv/bin/python -X utf8 -B project.py demo --server.port 8501
-```
-
-### 2.5. Máy Duy đã cài từ trước
-
-Nếu chưa tạo `.venv` trong repo, dùng môi trường workspace đã chạy thí nghiệm:
-
-```powershell
-$PolypPython = '../.venv-polyp/Scripts/python.exe'
-& $PolypPython -X utf8 -B scripts/prepare_project.py
-& './scripts/chay_demo.ps1'
-```
-
-Script demo ưu tiên `.venv` trong repo rồi mới dùng môi trường workspace.
-
-## 3. Năm người và cách ghép code
-
-| Người | Folder | Mã chính cần đọc | Trách nhiệm |
-|---|---|---|---|
-| Duy | `members/duy/works_done` | `unet.py`, `model_factory.py`, `lock_protocol.py` | U-Net, giao diện, khóa thực nghiệm, tích hợp, tổng hợp |
-| Khánh | `members/khanh/works_done` | `dataset.py`, `audit_data.py` | Manifest, RGB/mask, augmentation/seed, kiểm tra dữ liệu |
-| Phúc | `members/phuc/works_done` | `unetplusplus.py`, `architecture_figures.py` | U-Net++, node/dense skip, bốn head, sơ đồ |
-| Huy | `members/huy/works_done` | `losses.py`, `run_utils.py`, `training.py`, `train.py` | Một trainer A/B/C, loss, checkpoint/resume |
-| Trí | `members/tri/works_done` | `metrics.py`, `evaluate.py`, `compare.py`, `predict.py`, `demo.py` | Metric, evaluation, bảng/ảnh lỗi, demo |
-
-`project.py` là điểm chạy chung; import phần từng người, không gom nghiệp vụ vào một file.
-
-```text
-Manifest + Dataset (Khánh)
-        ↓
-Factory → U-Net (Duy) hoặc U-Net++ (Phúc)
-        ↓
-Loss + trainer (Huy), dùng metric chung (Trí)
-        ↓
-Validation chọn best → Duy khóa checkpoint/config
-        ↓
-Evaluator/compare/predict/demo (Trí)
-        ↓
-Bảng, hình, báo cáo và giải thích của cả nhóm
-```
-
-**Giao diện đã chốt:**
-
-- Train/validation loader trả `(images, masks)`; evaluation có `image_id`.
-- Images float32 `[N,3,256,256]`, RGB/255; masks float32 `[N,1,256,256]`, chỉ 0/1.
-- A/B forward trả một Tensor logits; C trả list bốn Tensor cùng shape theo thứ tự head 1→4.
-- Model không sigmoid. Loss nhận logits; evaluator sigmoid rồi threshold 0.5.
-- Trainer/evaluator import cùng metric và model factory.
-- H/W input là bội của 16, ít nhất 16. Demo resize ảnh mới đúng preprocessing checkpoint.
-
-Các công cụ intake/diagnostic cũ trong folder Huy/Duy giữ để truy nguyên; quy trình chính dùng các lệnh `project.py` trong README này.
-
-## 4. Hiểu bài toán và tensor
-
-Đây là **binary semantic segmentation**: mỗi pixel là polyp hoặc nền. Không phải chỉ phân loại cả ảnh có polyp, cũng không thay mask bằng bounding box.
-
-`NCHW`: N là số ảnh/batch, C là channel, H/W là cao/rộng. Feature32/64/128 channel là đặc trưng học được, không phải 32/64/128 màu.
-
-Đọc ảnh bằng byte + OpenCV để hỗ trợ đường dẫn Unicode. RGB resize linear, chia255. Mask JPEG đọc grayscale, pixel>127 thành1, sau đó resize **nearest** để không tạo nhãn phân số.
-
-Train có biến đổi hình học đồng bộ ảnh/mask; ColorJitter chỉ đổi ảnh. Val/test chỉ resize và normalize. Albumentations có RNG riêng; Dataset và sampler reset theo seed+epoch để ba model gặp cùng thứ tự/chuỗi augmentation.
-
-## 5. U-Net: từng tầng đi đâu
-
-![U-Net và bốn skip trực tiếp](members/phuc/works_done/artifacts/architecture/unet_course_topology.png)
-
-| Tầng | Channel | H×W |
-|---|---:|---|
-| Input | 3 | 256×256 |
-| Encoder1 | 32 | 256×256 |
-| Encoder2 | 64 | 128×128 |
-| Encoder3 | 128 | 64×64 |
-| Encoder4 | 256 | 32×32 |
-| Bottleneck | 512 | 16×16 |
-| Decoder4 | 256 | 32×32 |
-| Decoder3 | 128 | 64×64 |
-| Decoder2 | 64 | 128×128 |
-| Decoder1 | 32 | 256×256 |
-| Head | 1 logit | 256×256 |
-
-`DoubleConv`: Conv3×3/padding1 → ReLU → Conv3×3/padding1 → ReLU.
-
-`MaxPool2d(2)` giảm resolution. `ConvTranspose2d(2,stride=2)` tăng resolution và giảm channel. Decoder nối `torch.cat(...,dim=1)` feature upsample với skip, rồi DoubleConv kết hợp.
-
-Head Conv1×1 đưa32 channel thành1 logit/pixel. Đây là topology U-Net thông thường với same padding/base32; không tuyên bố tái hiện mọi thông số bản2015 (valid convolution/base64). Không pretrained/attention/residual/BatchNorm.
-
-Đọc [unet.py](members/duy/works_done/unet.py): DoubleConv → UpBlock → constructor → forward. Tự tính shape trước/sau mỗi concat.
-
-**Sơ đồ chi tiết từ forward của chính model:** [A_detailed.svg](results/model_graphs/A_detailed.svg), [DOT gốc](results/model_graphs/A_detailed.gv), [shape/tham số từng lời gọi](results/model_graphs/A_layer_shapes.csv).
-
-## 6. U-Net++: nested dense skip
-
-![U-Net++ 15 node, nested dense skip và bốn head](members/phuc/works_done/artifacts/architecture/unetplusplus_course_topology.png)
-
-Ký hiệu `X(i,j)`: i là độ sâu/resolution, j là cột tinh chỉnh. j=0 là encoder. H là DoubleConv; Up là phép tăng resolution/chiếu channel.
-
-```text
-X(0,0) = H(input)
-X(i,0) = H(Pool(X(i−1,0)))                     i>0
-X(i,j) = H(cat[X(i,0),...,X(i,j−1),
-              Up(X(i+1,j−1))])                j>0
-```
-
-Có **15 node** và **10 Up riêng**. Mỗi node mới nhận toàn bộ node trước trên cùng hàng, cộng feature từ hàng dưới. Cat là nối channel, không phải cộng dự đoán.
-
-Ví dụ **X0,2**:
-
-```text
-X0,0          : 32 channel
-X0,1          : 32 channel
-Up(X1,1)      : 64 → 32 channel
-Concat        : 32+32+32 = 96 channel
-DoubleConv    : 96 → 32 → 32
-```
-
-X0,4 nhận4 node cũ×32 + Up32 =160 channel rồi trả32. B dùng head cuối X0,4.
-
-Các node trung gian xử lý feature trước khi ghép, nhằm giảm semantic gap encoder/decoder. Đồ án đánh giá tác động qua mask/metric; không đo trực tiếp semantic gap bằng một chỉ số riêng.
-
-Đọc [unetplusplus.py](members/phuc/works_done/unetplusplus.py), đối chiếu constructor và forward với sơ đồ.
-
-**Sơ đồ từng phép toán và shape:** [B_detailed.svg](results/model_graphs/B_detailed.svg), [C_detailed.svg](results/model_graphs/C_detailed.svg), [shape B](results/model_graphs/B_layer_shapes.csv), [shape C](results/model_graphs/C_layer_shapes.csv).
-
-## 7. Deep supervision, loss và gradient
-
-C đặt head Conv1×1 tại X0,1..X0,4. Cả bốn nhận cùng mask thật.
-
-```text
-p = sigmoid(logits)
-softDice = (2Σ(p*y)+ε) / (Σp+Σy+ε)
-loss = 0.5*BCEWithLogits(logits,y) + 0.5*(1−softDice)
-loss_C = (loss_head1+loss_head2+loss_head3+loss_head4)/4
-ε = 1e−6
-```
-
-Loss tính từng ảnh rồi mean batch. Không sigmoid trước BCEWithLogits; không threshold trước backward. Threshold làm mất gradient hữu ích.
-
-```text
-zero_grad → forward → loss → backward → Adam.step
-```
-
-`backward` tính gradient; Adam cập nhật trọng số. `model.train()/eval()` đặt chế độ; `inference_mode()` tắt theo dõi gradient lúc val/test.
-
-**C val/test/demo chỉ dùng head cuối**, không average bốn xác suất và không thực hiện pruning. B/C khởi tạo trunk/head cuối giống nhau; C thêm ba head phụ.
-
-## 8. Protocol so sánh
-
-| Thiết lập | Giá trị |
-|---|---|
-| Split | 700 train /150 validation /150 test, manifest cố định |
-| Input | RGB256×256 /255; mask nhị phân/nearest |
-| Model | Base32; same padding; không BN/pretrained/attention/residual |
-| Optimizer | Adam LR0.001; không scheduler |
-| Train | Batch8, seed42, max50epoch, patience10, num_workers0 |
-| Loss | 0.5BCEWithLogits +0.5softDice; mean4head cho C |
-| Precision | Train AMP BF16; val/test FP32; không TF32 |
-| Best | Val Dice cao nhất; hòa thì val loss thấp hơn |
-| Test | Threshold0.5; head cuối; metric từng ảnh rồi mean |
-| Máy tham chiếu | RTX5060Laptop8GB; Python3.12.14; Torch2.11.0+cu128 |
-
-Lượt FP16 ban đầu của C bị overflow forward ở epoch30; checkpoint/Adam và forward FP32 trên cùng batch train vẫn hữu hạn. Nhóm chẩn đoán trên **train**, đổi cả A/B/C sang BF16 và chạy lại từ đầu **trước test**. BF16 không dùng GradScaler. Các run FP16 chỉ là lịch sử, không dùng bảng chính.
-
-Dice=2TP/(2TP+FP+FN); IoU=TP/(TP+FP+FN). Perfect/partial/disjoint/empty được kiểm tra bằng ví dụ nhỏ. Mean metric từng ảnh khác gộp tất cả pixel. Không dùng mean IoU để suy mean Dice bằng công thức của một ảnh.
-
-Small/medium/large là tỷ lệ diện tích mask gốc <5%,5–<20%,≥20%, không phải kích thước lâm sàng. Chưa xác minh near duplicate hoặc tính độc lập patient/video; chưa có external dataset/multi-seed.
-
-Thời gian forward chỉ model, loại đọc ảnh/transfer/metric/export. Đo một lượt chưa kết luận C nhanh hơn B. Wall time B có khoảng máy ngủ ở epoch10; không gọi là GPU compute cost.
-
-## 9. Chạy lại toàn bộ kết quả bằng checkpoint
-
-Sau khi cài môi trường:
-
-```powershell
-& $PolypPython -u -X utf8 -B scripts/reproduce_results.py --device cuda
-```
-
-Script kiểm tra source/manifest, lấy best đã train, đánh giá A/B/C và compare trong folder mới `results/reproduced_<thời điểm>`. Có CSV/JSON từng ảnh,450maskPNG, đồ thị, ảnh lỗi và sai khác so với bảng tham chiếu. Dùng `--device cpu` nếu không có GPU.
-
-Script mặc định inference batch1 để giảm VRAM và dễ chạy khi máy đang mở nhiều ứng dụng. Batch train vẫn8. Bảng timing tham chiếu đo batch8; nếu muốn đánh giá lại với batch đó, thêm `--batch-size 8`. Không so timing giữa các batch như cùng điều kiện.
-
-Không ghi đè A_test/B_test/C_test hoặc bảng đã công bố. Đổi thiết bị, Torch hoặc thư viện có thể đổi số ở mức nhỏ và timing; cùng seed không đảm bảo bitwise ở mọi môi trường.
-
-Các lệnh riêng nếu muốn theo từng bước:
-
-```powershell
-& $PolypPython -X utf8 -B project.py audit --output results/my_audit
-& $PolypPython -X utf8 -B project.py test --output results/my_checks
-& $PolypPython -X utf8 -B project.py evaluate --checkpoint runs/A_unet_seed42/best.pt --split test --output results/my_A_test --device cuda --protocol-lock configs/protocol_lock.json
-& $PolypPython -X utf8 -B project.py evaluate --checkpoint runs/B_unetplusplus_seed42/best.pt --split test --output results/my_B_test --device cuda --protocol-lock configs/protocol_lock.json
-& $PolypPython -X utf8 -B project.py evaluate --checkpoint runs/C_unetplusplus_ds_seed42/best.pt --split test --output results/my_C_test --device cuda --protocol-lock configs/protocol_lock.json
-& $PolypPython -X utf8 -B project.py compare --evaluations results/my_A_test results/my_B_test results/my_C_test --output results/my_comparison
-```
-
-Output phải mới hoặc rỗng. Kiểm tra script exit code trước bước tiếp theo.
-
-Predict một ảnh mới, không có mask thật thì không tự tạo Dice:
-
-```powershell
-& $PolypPython -X utf8 -B project.py predict --checkpoint runs/C_unetplusplus_ds_seed42/best.pt --input 'duong_dan_anh.jpg' --output results/my_prediction --device cuda
-```
-
-Demo resize **probability** về ảnh gốc bằng bilinear rồi threshold0.5. Benchmark đo tại256×256; không trộn với điểm đo ảnh gốc.
-
-## 10. Huấn luyện lại từ đầu
-
-Đây là một **lần thí nghiệm mới**, tách khỏi checkpoint đã công bố. Không thay code/config giữa A/B/C.
-
-```powershell
-& $PolypPython -X utf8 -B project.py train --config configs/unet.json --output runs/new_A --device cuda
-& $PolypPython -X utf8 -B project.py train --config configs/unetplusplus.json --output runs/new_B --device cuda
-& $PolypPython -X utf8 -B project.py train --config configs/unetplusplus_ds.json --output runs/new_C --device cuda
-& $PolypPython -X utf8 -B project.py lock --runs runs/new_A runs/new_B runs/new_C --labels A B C --output configs/new_lock.json
-```
-
-Sau lock mới evaluate test, dùng đúng `configs/new_lock.json` và checkpoint của run mới. Không dùng test chọn LR/epoch/threshold rồi gọi lại là đánh giá độc lập.
-
-Nếu thử khả năng chạy, dùng folder pilot mới và `--max-epochs 1`; điểm pilot không đưa vào bảng chính.
-
-## 11. Tự vẽ các hình chi tiết
-
-Đã tìm và đối chiếu hai repo:
-
-- **[Torchview](https://github.com/mert-kurttutan/torchview)**: trace chính PyTorch model, có module/operation/tensor shape. Được dùng để xuất các SVG/DOT chi tiết và CSV lời gọi lớp.
-- **[PlotNeuralNet](https://github.com/HarisIqbal88/PlotNeuralNet)**: sơ đồ phục vụ báo cáo bằng LaTeX/TikZ. Là tham khảo bố cục; repo này không cần TeX để chạy/vẽ các hình đã bàn giao.
-
-Sơ đồ tổng quan do nhóm vẽ bằng Matplotlib theo topology code, không copy hình paper.
-
-```powershell
-& $PolypPython -m pip install -r requirements-viz.txt
-& $PolypPython -X utf8 -B scripts/prepare_visualization_tools.py
-& $PolypPython -X utf8 -B scripts/draw_model_graphs.py
-& $PolypPython -X utf8 -B -m members.phuc.works_done.architecture_figures
-& $PolypPython -X utf8 -B -m members.duy.works_done.report_figures
-```
-
-Windows helper tải Graphviz portable từ nguồn chính thức, kiểm tra SHA256, đặt trong cache user để xử lý đường dẫn repo tiếng Việt; không cài registry/PATH hệ thống. Linux: `sudo apt install graphviz`; macOS: `brew install graphviz`, bỏ lệnh Windows helper.
-
-- `results/model_graphs/*_detailed.svg`: các module và shape; mở SVG bằng browser để zoom.
-- `*_detailed.gv`: source Graphviz.
-- `*_layer_shapes.csv`: từng lời gọi leaf module, input/output shape và số tham số.
-- `members/phuc/works_done/artifacts/architecture`: PNG/SVG dễ đưa vào slide/README.
-- `results/report_figures`: metric, đường học, ảnh đối chiếu.
-- Trace graph dùng dummy input và trọng số khởi tạo; thể hiện kiến trúc, không phải feature map học được của checkpoint.
-
-Muốn xem toàn bộ source theo từng người trong một trang:
-
-```powershell
-& $PolypPython -X utf8 -B scripts/tao_trang_xem_code.py
-```
-
-Mở `docs/XEM_TOAN_BO_SOURCE_CODE_VA_KIEN_TRUC.html` bằng trình duyệt. HTML được tạo tại máy, có source/ảnh nhúng và xem offline.
-
-Tạo Word/slide từ kết quả tham chiếu nếu cần:
-
-```powershell
-& $PolypPython -m pip install -r requirements-report.txt
-& $PolypPython -X utf8 -B members/duy/works_done/build_report.py
-& $PolypPython -X utf8 -B members/duy/works_done/build_slides.py
-```
-
-Đã có bản Word16trang/PPTX14slides được kiểm tra tại Notion nhóm. Các sản phẩm tài liệu được tạo local, không làm thay đổi checkpoint.
-
-## 12. Checkpoint, resume và tái lập
-
-- `best.pt`: epoch được validation chọn, dùng evaluator/demo.
-- `last.pt`: epoch mới nhất, có optimizer/RNG/history để resume.
-- `resolved_config.json`, `history.csv`, `summary.json`, `environment.json`: thông tin run.
-- `configs/protocol_lock.json`: checkpoint/config/split khóa trước test.
-- `configs/pretrained_release.json`: URL/bytes/SHA256 để tải đúng checkpoint.
-- [final_run_audit.json](results/verification/final_run_audit.json): source/config/checkpoint/testID/mean đã đối chiếu.
-
-```powershell
-& $PolypPython -X utf8 -B project.py train --config configs/unet.json --output runs/new_A --resume runs/new_A/last.pt --device cuda
-```
-
-Resume cùng folder từ last epoch, không lùi best rồi xóa lịch sử. Khi đổi core/config/precision, tạo run mới; không sửa lock để bỏ kiểm tra.
-
-**Quan trọng khi clone:** source/CSV/lock có SHA theo byte. `.gitattributes` giữ nguyên byte các file này, kể cả CRLF/LF khác nhau. Đổi line endings trong editor cũng có thể làm source guard báo khác.
-
-Provenance thí nghiệm tham chiếu ghi base commit `b8416d9eb3a20761c28a62b3bf169c19a10e534f` và dirty=true vì code chưa commit lúc train. Bản bàn giao giữ đúng tám source hash; một commit riêng không đủ chứng minh tái lập nếu thiếu config/manifest/runtime.
-
-## 13. Học và bảo vệ đồ án
-
-| Buổi | Học/đọc | Tự làm để chứng minh hiểu |
-|---|---|---|
-| 1 | Segmentation, RGB/mask, manifest/audit | Mở một ảnh train và GT; phân biệt mask và bounding box |
-| 2 | Tensor/CNN, U-Net | Tính shape từ256 đến16 và trở lại; tính channel sau concat |
-| 3 | U-Net++ | Vẽ đủ ba input X0,2; tính96channel; giải thích dense/nested |
-| 4 | Logits, sigmoid, BCE/softDice | Viết loss bằng lời; giải thích vì sao không threshold trước backward |
-| 5 | Trainer, Adam, BF16, DS | Theo một batch; giải thích mean4loss và evalhead cuối |
-| 6 | Validation/checkpoint/resume | Tìm best50/49/48 trong history; giải thích optimizer/RNG |
-| 7 | Metric/CSV/ảnh lỗi | TP=1,FP=1,FN=1 → Dice0.5,IoU1/3; truy một ID về mask |
-| 8 | Demo và báo cáo | Trình bày10phút; giải thích bằng số thật và giới hạn |
-
-Duy đi qua code theo thứ tự: Dataset → UNet → UNetPlusPlus → loss/trainer → metrics/evaluator → comparison/demo. Mỗi bạn giải thích input/output, một đoạn code chính và file minh chứng của folder mình.
-
-Các câu thường cần trả lời:
-
-1. Vì sao output là một channel logits? Vì sao không sigmoid hai lần?
-2. Vì sao mask resize nearest?
-3. X0,2/X0,4 có bao nhiêu channel trước/sau DoubleConv?
-4. Nested dense skip khác deep supervision thế nào?
-5. B/C lấy head nào trong test? Có pruning hoặc average-head không?
-6. Vì sao cả A/B/C đổi từ FP16 sang BF16 trước test?
-7. Validation chọn best hay test? Có chọn threshold theo test không?
-8. Mean Dice khác metric gộp pixel thế nào?
-9. Model tốt hơn ở điểm mean có thắng mọi ảnh không?
-10. Một seed/split và A/B khác params cho phép kết luận đến đâu?
-
-[Notion chung của nhóm](https://app.notion.com/p/3f7baf6454cb819dbc67e996b691a059) có bản bàn giao, tài liệu học, nhật ký, câu hỏi và Word/slide. Trạng thái đọc hiểu của từng người cần tự xác nhận.
-
-## 14. Lỗi thường gặp
-
-| Lỗi | Kiểm tra |
-|---|---|
-| Không tìm thấy project.py | Đang ở repo root chưa? |
-| Thiếu torch/module | Dùng đúng Python trong `.venv`; cài requirements/pip check |
-| Không có CUDA | Kiểm tra driver và wheelcu128; dùng CPU nếu cần |
-| Không có best.pt | Chạy `scripts/prepare_project.py`; kiểm tra Release/network |
-| Source/manifest SHA khác | Đúng branch/byte/eol chưa? Không bỏ guard; clone đúng bản |
-| Output đã tồn tại | Chọn output mới để giữ minh chứng cũ |
-| Cổng8501 đã dùng | Mở server đang chạy hoặc chọn8502 |
-| Graphviz chưa có | Chạy helperWindows hoặc cài dot bằng package manager |
-| Thiếu dữ liệu ở source ZIP | Chép Kvasir-SEG/images+masks; giữ nguyên manifest |
-| Tưởng48tests là Dice | Verification là kiểm tra kỹ thuật; điểm ở comparison.csv |
-
-## 15. Báo cáo và biểu đồ bổ sung (15/11/2026)
-
-[Tải báo cáo Word Nhóm 06](reports/BaoCao_DeepLearning_Nhom_06.docx) — 54 trang, 23 hình và 21 bảng. Chương 1 giữ hai hình kiến trúc có ghi nguồn từ bài U-Net/U-Net++; Chương 3 dùng hai sơ đồ Duy cung cấp, chú thích theo đúng cấu hình nhóm. Ba biểu đồ bổ sung thể hiện số tham số, chênh lệch Dice ghép cặp kèm khoảng bootstrap và kết quả từng head của C. Bốn bảng được chuyển nguyên số liệu xuống Phụ lục E. Phụ lục F hướng dẫn notebook và ghi kết quả tái lập đã kiểm chứng.
-
-Tạo lại ba biểu đồ từ CSV hiện có, không huấn luyện lại:
-
-```powershell
-./.venv/Scripts/python.exe -X utf8 -B scripts/build_additional_charts.py
-```
-
-Hình và thông tin nguồn nằm ở `results/report_figures/visual_report_20261114/`: `paper_figure_sources.json` ghi nguồn hình bài báo; `chart_sources.json` ghi SHA256 của CSV đầu vào. Ảnh demo thật, CSV phân tích từng head và script tính lại bootstrap/Wilcoxon nằm ở `results/report_figures/checklist_20261114/`. Các phân tích bổ sung dùng checkpoint đã chốt, không thay kết quả A/B/C chính và không phải đánh giá nhiều seed.
-
-Kiểm tra trước khi đưa code lên GitHub: 48 kiểm tra gốc và 10 kiểm tra bổ sung đều đạt. Các kiểm tra này xác nhận hoạt động của code; không thay thế điểm Dice/IoU trên dữ liệu thật.
-
-`scripts/update_visual_report.py` dùng bản báo cáo hoàn thiện trước khi thêm biểu đồ làm đầu vào để dựng bản Word mới; không dùng chính bản đầu ra làm đầu vào lần nữa. Đây là công cụ biên tập tài liệu tùy chọn, không cần để chạy mô hình hoặc demo.
-
-## 16. Tài liệu và repo tham khảo
-
-- [U-Net — Ronneberger et al.,2015](https://arxiv.org/abs/1505.04597).
-- [U-Net++ — Zhou et al.,2018](https://arxiv.org/abs/1807.10165).
-- [Kvasir-SEG — Jha et al.](https://arxiv.org/abs/1911.07069).
-- [PyTorch Learn the Basics](https://docs.pytorch.org/tutorials/beginner/basics/intro.html).
-- [PyTorch BCEWithLogitsLoss](https://docs.pytorch.org/docs/2.11/generated/torch.nn.BCEWithLogitsLoss.html).
-- [Saving and Loading Models](https://docs.pytorch.org/tutorials/beginner/saving_loading_models.html).
-- [Reproducibility](https://docs.pytorch.org/docs/2.11/notes/randomness.html).
-- [Albumentations reproducibility](https://albumentations.ai/docs/4-advanced-guides/reproducibility/).
-- [Torchview](https://github.com/mert-kurttutan/torchview), [Graphviz](https://graphviz.org/download/), [PlotNeuralNet](https://github.com/HarisIqbal88/PlotNeuralNet).
-
-Số trong paper không phải kết quả nhóm. Kết quả trong README được tính từ run/CSV/checkpoint của repo, chưa có đánh giá bên ngoài Kvasir-SEG.
-
-Repo chỉ giữ **một README Markdown chính**. Các bản ghi/tài liệu Markdown khác vẫn lưu tại máy Duy và Notion; không đưa vào commit bàn giao này.
+`check` chạy kiểm tra code. `compare` đánh giá lại cùng tập test và xuất CSV, mask, biểu đồ vào thư mục mới. Lệnh đóng gói tạo ZIP gồm code, dữ liệu và checkpoint tham chiếu.
+
+| Thư mục | Nội dung |
+| --- | --- |
+| `notebooks/` | Luồng đồ án và giao diện |
+| `members/*/works_done/` | Module Python và notebook của từng người |
+| `configs/` | Cấu hình A/B/C, manifest hash và khóa checkpoint |
+| `results/` | Metric, hình và minh chứng thực nghiệm |
+
+Tài liệu gốc · [U-Net](https://arxiv.org/abs/1505.04597) · [U-Net++](https://arxiv.org/abs/1807.10165) · [Kvasir-SEG](https://arxiv.org/abs/1911.07069)
