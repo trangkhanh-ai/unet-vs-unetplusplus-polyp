@@ -39,6 +39,7 @@ Trên Linux/macOS, dùng `python3.12` cho bước tạo môi trường và `./.v
 2. Mở [notebook đồ án](notebooks/DoAn_Nhom06_DayDu.ipynb). Ở cell đầu, đặt `TRAIN_FROM_SCRATCH = False` để đánh giá checkpoint báo cáo. Chọn **Restart Kernel → Run All**.
 3. Để huấn luyện mới, đặt `TRAIN_FROM_SCRATCH = True` và `REUSE_COMPLETED_RUN = None`. Nếu đã có lượt notebook hoàn tất cùng cấu hình, điền tên thư mục của lượt đó vào `REUSE_COMPLETED_RUN` để đọc lại. Kết quả từng lượt nằm ở `results/notebook_<thời gian>/`.
 4. Mở [notebook giao diện và biểu đồ](notebooks/GiaoDien_Va_BieuDo.ipynb) để chạy kiểm tra Streamlit và tạo lại biểu đồ báo cáo. Notebook tự dừng server sau khi kiểm tra.
+5. Mở [notebook thí nghiệm bổ sung](notebooks/ThiNghiemBoSung_Nhom06.ipynb) để tái lập sàng lọc ảnh tương tự và đo các nhánh cắt tỉa U-Net++.
 
 Để mở ứng dụng và thử ảnh nội soi trong trình duyệt, chạy lệnh sau rồi mở [demo cục bộ](http://127.0.0.1:8501).
 
@@ -59,6 +60,22 @@ Trên Linux/macOS, dùng `python3.12` cho bước tạo môi trường và `./.v
 Notebook đồ án chứa các class và hàm cốt lõi để đọc từ dữ liệu đến dự đoán. Năm notebook theo thành viên minh họa từng phần, gọi module tương ứng và đọc minh chứng đã lưu. Hai sơ đồ có nhãn theo đúng cấu hình nhóm nằm ở [U-Net](results/report_figures/notebook_20261115/unet_chu_thich.png) và [U-Net++](results/report_figures/notebook_20261115/unetplusplus_chu_thich.png).
 
 ## Kiểm tra và đóng gói
+
+### Thí nghiệm bổ sung
+
+Trong [notebook](notebooks/ThiNghiemBoSung_Nhom06.ipynb), chọn **Restart Kernel → Run All**. Đặt `RUN_EXPERIMENTS = True` để chạy cả hai phép thử và ghi vào thư mục riêng dưới `results/`. Đặt `False` để xem bảng, ảnh minh họa và biểu đồ từ minh chứng của báo cáo. `DEVICE = "auto"` ưu tiên CUDA khi khả dụng.
+
+Sau bước chuẩn bị môi trường và checkpoint ở trên, chạy hai lệnh dưới đây từ gốc repo. Chọn thư mục đầu ra mới cho mỗi lượt. Dùng `--device cpu` nếu chỉ có CPU.
+
+```powershell
+& $Python -X utf8 scripts/audit_split_similarity.py --output results/similarity_new
+& $Python -X utf8 scripts/benchmark_pruned_heads.py --output results/pruning_new --device cuda
+```
+
+- **Sàng lọc ảnh tương tự.** So 232.500 cặp ảnh khác tập bằng perceptual hash và đánh dấu 17 cặp ứng viên. Tính lại Dice khi tạm loại 6 ảnh test bị đánh dấu vẫn cho cùng thứ hạng A/B/C. Xem [danh sách cặp](results/report_figures/extension_20261123/similarity/similarity_candidates.csv) và [bảng độ nhạy](results/report_figures/extension_20261123/similarity/similarity_sensitivity.csv). Phép sàng lọc dùng thông tin ở cấp ảnh.
+- **Cắt tỉa U-Net++.** Dùng checkpoint C để chạy các mạng con L1–L4 và đo từng nhánh. L3 đạt Dice test 0,7268 và 10,71 ms/ảnh, so với 0,7390 và 16,88 ms/ảnh của L4. Đây là thời gian forward FP32, batch 8 trên RTX 5060 Laptop GPU. Xem [bảng đo](results/report_figures/extension_20261123/pruning/pruning_summary.csv) và [cấu hình phép đo](results/report_figures/extension_20261123/pruning/pruning_summary.json).
+
+### Kiểm tra dự án
 
 ```powershell
 & $Python -X utf8 CacFileSource.py check

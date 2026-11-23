@@ -448,7 +448,8 @@ def main():
     Đọc bảng đối chiếu để biết lượt mới đạt gì, không tự thay số liệu báo cáo.
     Kết quả chính chỉ có một seed/split, A/B khác dung lượng, chưa xác minh độc lập bệnh nhân/video,
     chưa thử dữ liệu ngoài; đường validation ở cuối 50 epoch chưa chứng minh đã hội tụ.
-    Chưa có pruning thực thi. Các ảnh đều có polyp nên chưa kiểm chứng false positive trên ảnh âm tính.
+    Các ảnh đều có polyp nên chưa kiểm chứng false positive trên ảnh âm tính.
+    [Notebook thí nghiệm bổ sung](ThiNghiemBoSung_Nhom06.ipynb) chạy riêng phần sàng lọc ảnh tương tự và cắt tỉa từng head của checkpoint C.
 
     Duy cần giải thích được: (1) ảnh/mask khác nhau thế nào; (2) concat theo dim=1;
     (3) X(0,2) nhận 96 kênh; (4) logits khác xác suất; (5) mean bốn loss khác mean bốn xác suất;

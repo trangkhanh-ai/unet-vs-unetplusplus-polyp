@@ -1,0 +1,92 @@
+{
+  "device": "NVIDIA GeForce RTX 5060 Laptop GPU",
+  "torch_version": "2.11.0+cu128",
+  "batch_size": 8,
+  "threshold": 0.5,
+  "checkpoint_sha256": "e292d3cf7dbe09d94377279ff839389c3c3824ef87a345a382376da42eeb8eca",
+  "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+  "lock_sha256": "b7742166ae3330642de840b38fda90907c93f80595ae55573e2fbdc1c6cb4134",
+  "repeats": 5,
+  "forwards_per_repeat": 12,
+  "timings_ms_per_image": [
+    [
+      2.8479041660223934,
+      2.850849999958882,
+      2.865274999445925,
+      2.9030937500162204,
+      2.8792937506902185
+    ],
+    [
+      6.1990708333420725,
+      6.178638541314285,
+      6.162940625169237,
+      6.254892707753849,
+      6.160165624654231
+    ],
+    [
+      10.709163541226493,
+      11.006414582273768,
+      10.684282290943278,
+      10.720855208395127,
+      10.70837395915684
+    ],
+    [
+      16.797181250391684,
+      17.001524999310885,
+      16.884572916751495,
+      16.700605208219105,
+      17.02887187517869
+    ]
+  ],
+  "rows": [
+    {
+      "level": 1,
+      "nodes": 3,
+      "parameters": 101537,
+      "dice_val": 0.36761989962624464,
+      "dice_test": 0.3328326088918326,
+      "median_ms_per_image": 2.865274999445925,
+      "min_ms_per_image": 2.8479041660223934,
+      "max_ms_per_image": 2.9030937500162204,
+      "max_abs_logit_delta": 0.0,
+      "mask_pixel_mismatches": 0
+    },
+    {
+      "level": 2,
+      "nodes": 6,
+      "parameters": 511681,
+      "dice_val": 0.5861752584760425,
+      "dice_test": 0.5606384854637557,
+      "median_ms_per_image": 6.178638541314285,
+      "min_ms_per_image": 6.160165624654231,
+      "max_ms_per_image": 6.254892707753849,
+      "max_abs_logit_delta": 0.0,
+      "mask_pixel_mismatches": 0
+    },
+    {
+      "level": 3,
+      "nodes": 10,
+      "parameters": 2205537,
+      "dice_val": 0.7675668390972017,
+      "dice_test": 0.7268413575131657,
+      "median_ms_per_image": 10.709163541226493,
+      "min_ms_per_image": 10.684282290943278,
+      "max_ms_per_image": 11.006414582273768,
+      "max_abs_logit_delta": 0.0,
+      "mask_pixel_mismatches": 0
+    },
+    {
+      "level": 4,
+      "nodes": 15,
+      "parameters": 9042177,
+      "dice_val": 0.7888222476699186,
+      "dice_test": 0.7390470717877173,
+      "median_ms_per_image": 16.884572916751495,
+      "min_ms_per_image": 16.700605208219105,
+      "max_ms_per_image": 17.02887187517869,
+      "max_abs_logit_delta": 0.0,
+      "mask_pixel_mismatches": 0
+    }
+  ],
+  "scope": "FP32 forward only on a fixed resident batch; each truncated path runs one head. Validation and test Dice use 150 distinct images each."
+}

@@ -1,0 +1,49 @@
+{
+  "images": 1000,
+  "candidate_threshold": 6,
+  "hash_bits": 63,
+  "manifest_sha256": "d72374c62d63a22692b07f3d364d600eaed04877c57aab78f52951cbd7769e28",
+  "pairs_screened": 232500,
+  "screened_by_split": {
+    "test/train": 105000,
+    "train/val": 105000,
+    "test/val": 22500
+  },
+  "candidate_count": 17,
+  "candidates_by_split": {
+    "test/train": 8,
+    "train/val": 9
+  },
+  "flagged_test_images": [
+    "cju13cgqmnhwn0988yrainhcp",
+    "cju32qr9tbvsj08013pkpjenq",
+    "cju7agj961l2r0818z29iq8yn",
+    "cju7aifyo1p3n07552nxjx51f",
+    "cju7cue9b232j0801qdzk1ykj",
+    "cju8b542nr81x0871uxnkm9ih"
+  ],
+  "sensitivity": [
+    {
+      "model": "A",
+      "flagged_test_images": 6,
+      "retained_test_images": 144,
+      "reference_dice": 0.6014174367678825,
+      "retained_dice": 0.6038580034112774
+    },
+    {
+      "model": "B",
+      "flagged_test_images": 6,
+      "retained_test_images": 144,
+      "reference_dice": 0.668239984232573,
+      "retained_dice": 0.6705329590901467
+    },
+    {
+      "model": "C",
+      "flagged_test_images": 6,
+      "retained_test_images": 144,
+      "reference_dice": 0.7390470717877173,
+      "retained_dice": 0.7385782634340747
+    }
+  ],
+  "scope": "Image-level candidate screening. Patient/video groups require source identifiers."
+}
