@@ -1,0 +1,55 @@
+{
+  "split_counts_small_medium_large": {
+    "train": [
+      140,
+      374,
+      186
+    ],
+    "val": [
+      30,
+      80,
+      40
+    ],
+    "test": [
+      30,
+      80,
+      40
+    ]
+  },
+  "paired_C_minus_A": {
+    "images": 150,
+    "c_higher": 116,
+    "c_lower": 34,
+    "mean_delta": 0.13762963501983483
+  },
+  "validation_head_dice": {
+    "1": 0.3676200592536319,
+    "2": 0.5861762005259294,
+    "3": 0.7675670347496328,
+    "4": 0.7888210712601573,
+    "mean": 0.7700896944156045
+  },
+  "error_cases": [
+    {
+      "image_id": "cju0qoxqj9q6s0835b43399p4",
+      "TP": 96,
+      "FP": 3,
+      "FN": 17639,
+      "dice_C": 0.0107659526746663
+    },
+    {
+      "image_id": "cju5k7r0yf98c09878csbxb4d",
+      "TP": 1260,
+      "FP": 12552,
+      "FN": 0,
+      "dice_C": 0.1671974522292993
+    }
+  ],
+  "sources": [
+    "members/khanh/works_done/dataset_splits.csv",
+    "results/comparison/paired_per_image.csv",
+    "results/report_figures/checklist_20261114/head_metrics_val.csv",
+    "results/C_test/masks/",
+    "Kvasir-SEG/masks/"
+  ]
+}

@@ -75,6 +75,18 @@ Sau bước chuẩn bị môi trường và checkpoint ở trên, chạy hai l�
 - **Sàng lọc ảnh tương tự.** So 232.500 cặp ảnh khác tập bằng perceptual hash và đánh dấu 17 cặp ứng viên. Tính lại Dice khi tạm loại 6 ảnh test bị đánh dấu vẫn cho cùng thứ hạng A/B/C. Xem [danh sách cặp](results/report_figures/extension_20261123/similarity/similarity_candidates.csv) và [bảng độ nhạy](results/report_figures/extension_20261123/similarity/similarity_sensitivity.csv). Phép sàng lọc dùng thông tin ở cấp ảnh.
 - **Cắt tỉa U-Net++.** Dùng checkpoint C để chạy các mạng con L1–L4 và đo từng nhánh. L3 đạt Dice test 0,7268 và 10,71 ms/ảnh, so với 0,7390 và 16,88 ms/ảnh của L4. Đây là thời gian forward FP32, batch 8 trên RTX 5060 Laptop GPU. Xem [bảng đo](results/report_figures/extension_20261123/pruning/pruning_summary.csv) và [cấu hình phép đo](results/report_figures/extension_20261123/pruning/pruning_summary.json).
 
+### Hình minh chứng để báo cáo và bảo vệ
+
+Chạy lệnh sau từ gốc dự án để vẽ lại bốn hình từ manifest chia tập và dữ liệu đánh giá đã lưu. Lệnh tạo thư mục mới và không yêu cầu huấn luyện lại.
+
+```powershell
+& $Python -X utf8 scripts/build_defense_figures.py --output results/defense_new
+```
+
+- [Phân bố cỡ polyp giữa các tập](results/report_figures/defense_20261127/split_polyp_mix.png) và [Dice validation theo từng head](results/report_figures/defense_20261127/heads_validation.png) dùng trong slide.
+- [Chênh Dice C − A trên từng ảnh](results/report_figures/defense_20261127/paired_dice_per_image.png) và [vùng dự đoán đúng, tô thừa, bỏ sót](results/report_figures/defense_20261127/pixel_errors.png) tương ứng với Hình 4.7 và Hình 4.13 trong Word.
+- [Minh chứng nguồn](results/report_figures/defense_20261127/figure_evidence.json) lưu số mẫu, mã của hai ảnh và số pixel TP, FP, FN. Hai ảnh minh họa được chọn sau đánh giá.
+
 ### Kiểm tra dự án
 
 ```powershell
